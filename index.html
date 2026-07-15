@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
-    <title>REALISTIC FUR COAT COUTURE HANDHELD</title>
+    <title>MINK FUR COAT REALISTIC HANDHELD</title>
     <style>
         :root {
             /* 奢华吸光貂皮基底 */
-            --mink-core: #030304;
-            
-            /* 哥特一体化3D按钮材质 */
-            --gothic-metal-top: #1e212b;
-            --gothic-metal-shadow: #050608;
+            --mink-black: #060608;
+            --mink-shadow: #020203;
+
+            /* 哥特一体化银黑金属 */
+            --gothic-solid-metal: #101114;
+            --metal-silver-highlight: #70758c;
         }
 
         body {
@@ -21,76 +22,65 @@
             color: #ffffff;
             font-family: 'Courier New', Courier, monospace;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             overflow: hidden;
         }
 
-        /* 📱 手机端等比全景缩放容器：确保整个游戏机和下坠皮草在移动端完美展露 */
-        .viewport-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-            box-sizing: border-box;
-        }
-
-        /* 掌机核心壳体 */
+        /* 掌机核心主体 */
         .console-wrapper {
-            background-color: var(--mink-core);
-            padding: 55px 50px 70px 50px;
-            border-radius: 48px;
+            background-color: var(--mink-black);
+            padding: 45px 40px 55px 40px;
+            border-radius: 42px;
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
             box-shadow: 
-                0 65px 130px rgba(0, 0, 0, 0.98),
-                inset 0 0 55px rgba(0, 0, 0, 0.95);
-            /* 锁定PC端基础尺寸 */
-            width: 300px; 
-            flex-shrink: 0;
+                0 50px 100px rgba(0, 0, 0, 0.99),
+                inset 0 0 40px rgba(0, 0, 0, 0.95);
         }
 
-        /* 🦨 仿真皮毛高密流场画布：为长毛下坠与自然卷曲留出绝对富余空间 */
+        /* 🦨 动态高密度奢华长毛绒下坠画布：溢出范围更大，允许长毛向下垂挂包裹边缘 */
         #furCanvas {
             position: absolute;
-            top: -75px;
-            left: -75px;
-            width: calc(100% + 150px);
-            height: calc(100% + 200px); /* 底部极大延展，容纳貂皮大衣长毛重力下垂的层叠感 */
+            top: -45px;
+            left: -45px;
+            width: calc(100% + 90px);
+            height: calc(100% + 120px); /* 底部大幅加长，给毛发下坠提供物理堆叠空间 */
             pointer-events: none;
-            z-index: 2; 
+            z-index: 2; /* 浮在机壳底色之上，但在硬件按键与屏幕下方 */
         }
 
-        /* 铁铸防折射屏幕外框 */
+        /* 铁铸屏幕外框 */
         .screen-frame {
-            background-color: #090a0d;
-            padding: 24px 24px 30px 24px;
-            border-radius: 22px;
+            background-color: #0b0c0f;
+            padding: 22px 22px 28px 22px;
+            border-radius: 18px;
             box-shadow: 
-                inset 6px 8px 30px rgba(0,0,0,0.99),
-                0 10px 25px rgba(0, 0, 0, 0.95);
-            margin-bottom: 55px;
+                inset 6px 8px 20px rgba(0,0,0,0.98),
+                0 6px 16px rgba(0, 0, 0, 0.9);
+            margin-bottom: 45px;
             position: relative;
-            border: 1px solid #161820;
+            border: 2px solid #181920;
             z-index: 4; 
         }
 
         .screen-container {
             position: relative;
-            border-radius: 5px;
+            border-radius: 4px;
             overflow: hidden;
-            box-shadow: inset 0 0 45px rgba(0,0,0,0.99);
+            box-shadow: inset 0 0 35px rgba(0,0,0,0.98);
         }
 
-        /* 偏光复古扫描线 */
+        /* LCD偏光扫描线与折射玻璃 */
         .screen-container::before {
             content: "";
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: repeating-linear-gradient(rgba(0, 0, 0, 0.24) 0px, rgba(0, 0, 0, 0.24) 1px, transparent 1px, transparent 3px);
+            background: repeating-linear-gradient(rgba(0, 0, 0, 0.2) 0px, rgba(0, 0, 0, 0.2) 1px, transparent 1px, transparent 3px);
             pointer-events: none;
             z-index: 5;
         }
@@ -98,7 +88,7 @@
             content: "";
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.002) 60%, transparent 100%);
+            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.005) 50%, transparent 100%);
             pointer-events: none;
             z-index: 6;
         }
@@ -106,7 +96,7 @@
         .screen-glitch-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #020203; opacity: 0;
+            background-color: #030406; opacity: 0;
             pointer-events: none;
             transition: opacity 0.35s ease-in-out;
             z-index: 10;
@@ -119,17 +109,17 @@
         .controls-wrapper {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            width: 280px;
+            gap: 25px;
+            width: 240px;
             justify-items: center;
             align-items: center;
             z-index: 4;
         }
 
-        /* ✟ 真实立体浮雕 哥特十字架实体按键（无描边，强3D感） ✟ */
+        /* ✟ 完整一体化 哥特金属十字架实体按键 ✟ */
         .key-btn {
-            width: 86px;  
-            height: 86px;
+            width: 68px;
+            height: 68px;
             background: transparent;
             border: none;
             cursor: pointer;
@@ -140,257 +130,208 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 纯粹依靠双重悬浮滤镜与斜面渐变渲染出厚重立体按钮，不带生硬描边 */
+        /* 使用 SVG 路径塑造真正不分割的实体哥特十字架，去除任何红点 */
         .key-btn .gothic-cross-svg {
             width: 100%;
             height: 100%;
-            /* 双层阴影：下层极深长阴影突出悬浮高度，上层软阴影过渡 */
-            filter: drop-shadow(0px 12px 18px rgba(0, 0, 0, 0.98)) drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.8));
-            transition: transform 0.06s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.06s ease;
+            filter: drop-shadow(3px 6px 10px rgba(0, 0, 0, 0.9));
+            transition: transform 0.05s ease;
         }
 
-        /* 十字架基座：依靠渐变塑造三维斜凸感 */
-        .key-btn .cross-body {
-            fill: url(#gothicMetalGrad);
-            stroke: none; 
+        /* 填充高对比度的银黑重铁质感与冷银高光边缘 */
+        .key-btn .cross-path {
+            fill: var(--gothic-solid-metal);
+            stroke: var(--metal-silver-highlight);
+            stroke-width: 1.2px;
+            transition: all 0.05s ease;
         }
 
-        /* 顶部受光立体层：高光内嵌 */
-        .key-btn .cross-bevel {
-            fill: url(#bevelGrad);
-            stroke: none;
+        /* 浮雕内部装饰线阴影 */
+        .key-btn .inner-decor {
+            fill: #08090b;
+            stroke: #1b1d24;
+            stroke-width: 0.8px;
         }
 
-        /* 物理重压下沉反馈 */
+        /* 物理重击动作：整体下凹、银边高光收敛、暗部加深 */
         .key-btn:active .gothic-cross-svg, .key-btn.pseudo-active .gothic-cross-svg {
-            transform: translateY(5px) scale(0.95);
-            filter: drop-shadow(0px 3px 5px rgba(0, 0, 0, 0.95));
+            transform: translateY(3px) scale(0.97);
+        }
+
+        .key-btn:active .cross-path, .key-btn.pseudo-active .cross-path {
+            fill: #0b0c0e;
+            stroke: #484b59; /* 按下时金属边缘光变暗 */
         }
 
         .key-up { grid-column: 2; }
         .key-left { grid-column: 1; grid-row: 2; }
         .key-down { grid-column: 2; grid-row: 2; }
         .key-right { grid-column: 3; grid-row: 2; }
-
-        /* 移动端媒体查询：当屏幕宽度小于掌机连同毛发宽度时，自动进行视口微缩 */
-        @media (max-width: 480px) {
-            .viewport-container {
-                transform: scale(0.78); /* 缩小至78%，使得整体在小屏手机上也能完全露出来 */
-                transform-origin: center center;
-            }
-        }
-        @media (max-width: 380px) {
-            .viewport-container {
-                transform: scale(0.68); /* 极小屏幕进一步缩放 */
-            }
-        }
     </style>
 </head>
 <body>
 
-    <div class="viewport-container">
-        <div class="console-wrapper" id="consoleMain">
-            <!-- 🔬 奢华皮草动力学引擎画布（根粗头细、自然卷曲、针毛反光） -->
-            <canvas id="furCanvas"></canvas>
+    <div class="console-wrapper" id="consoleMain">
+        <!-- 🔬 高精貂皮长毛绒柔顺动力学画布 -->
+        <canvas id="furCanvas"></canvas>
 
-            <!-- 屏幕区 -->
-            <div class="screen-frame">
-                <div class="screen-container">
-                    <div class="screen-glitch-overlay" id="screenOverlay"></div>
-                    <canvas id="tetris"></canvas>
-                </div>
+        <!-- 屏幕区 -->
+        <div class="screen-frame">
+            <div class="screen-container">
+                <div class="screen-glitch-overlay" id="screenOverlay"></div>
+                <canvas id="tetris"></canvas>
             </div>
+        </div>
 
-            <!-- ✟ 3D无描边一体化哥特十字架控制面板 ✟ -->
-            <div class="controls-wrapper">
-                <!-- 共享材质光影定义池 -->
-                <svg style="width:0; height:0; position:absolute;">
-                    <defs>
-                        <!-- 黑钛合金实体斜面渐变（塑造光线从左上角射入的立体厚度） -->
-                        <linearGradient id="gothicMetalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#2d323f" />
-                            <stop offset="30%" stop-color="#16181f" />
-                            <stop offset="70%" stop-color="#090a0d" />
-                            <stop offset="100%" stop-color="#020203" />
-                        </linearGradient>
-                        <!-- 顶部浮雕受光面冷银反光 -->
-                        <linearGradient id="bevelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stop-color="#5a6075" stop-opacity="0.75"/>
-                            <stop offset="25%" stop-color="#22252d" stop-opacity="0.9"/>
-                            <stop offset="100%" stop-color="#050608" stop-opacity="0.98"/>
-                        </linearGradient>
-                    </defs>
+        <!-- ✟ 完整一体化哥特十字架控制面板 ✟ -->
+        <div class="controls-wrapper">
+            <button class="key-btn key-up" id="btnUp" data-key="up">
+                <svg class="gothic-cross-svg" viewBox="0 0 100 100">
+                    <path class="cross-path" d="M 38 10 L 62 10 L 62 34 L 86 34 L 86 58 L 62 58 L 62 90 L 38 90 L 38 58 L 14 58 L 14 34 L 38 34 Z" />
+                    <path class="inner-decor" d="M 43 15 L 57 15 L 57 39 L 81 39 L 81 53 L 57 53 L 57 85 L 43 85 L 43 53 L 19 53 L 19 39 L 43 39 Z" />
                 </svg>
-
-                <button class="key-btn key-up" id="btnUp" data-key="up">
-                    <svg class="gothic-cross-svg" viewBox="0 0 100 100">
-                        <path class="cross-body" d="M 36 6 L 64 6 L 64 32 L 94 32 L 94 60 L 64 60 L 64 94 L 36 94 L 36 60 L 6 60 L 6 32 L 36 32 Z" />
-                        <path class="cross-bevel" d="M 40 10 L 60 10 L 60 36 L 90 36 L 90 56 L 60 56 L 60 90 L 40 90 L 40 56 L 10 56 L 10 36 L 40 36 Z" />
-                    </svg>
-                </button>
-                <button class="key-btn key-left" id="btnLeft" data-key="left">
-                    <svg class="gothic-cross-svg" viewBox="0 0 100 100">
-                        <path class="cross-body" d="M 36 6 L 64 6 L 64 32 L 94 32 L 94 60 L 64 60 L 64 94 L 36 94 L 36 60 L 6 60 L 6 32 L 36 32 Z" />
-                        <path class="cross-bevel" d="M 40 10 L 60 10 L 60 36 L 90 36 L 90 56 L 60 56 L 60 90 L 40 90 L 40 56 L 10 56 L 10 36 L 40 36 Z" />
-                    </svg>
-                </button>
-                <button class="key-btn key-down" id="btnDown" data-key="down">
-                    <svg class="gothic-cross-svg" viewBox="0 0 100 100">
-                        <path class="cross-body" d="M 36 6 L 64 6 L 64 32 L 94 32 L 94 60 L 64 60 L 64 94 L 36 94 L 36 60 L 6 60 L 6 32 L 36 32 Z" />
-                        <path class="cross-bevel" d="M 40 10 L 60 10 L 60 36 L 90 36 L 90 56 L 60 56 L 60 90 L 40 90 L 40 56 L 10 56 L 10 36 L 40 36 Z" />
-                    </svg>
-                </button>
-                <button class="key-btn key-right" id="btnRight" data-key="right">
-                    <svg class="gothic-cross-svg" viewBox="0 0 100 100">
-                        <path class="cross-body" d="M 36 6 L 64 6 L 64 32 L 94 32 L 94 60 L 64 60 L 64 94 L 36 94 L 36 60 L 6 60 L 6 32 L 36 32 Z" />
-                        <path class="cross-bevel" d="M 40 10 L 60 10 L 60 36 L 90 36 L 90 56 L 60 56 L 60 90 L 40 90 L 40 56 L 10 56 L 10 36 L 40 36 Z" />
-                    </svg>
-                </button>
-            </div>
+            </button>
+            <button class="key-btn key-left" id="btnLeft" data-key="left">
+                <svg class="gothic-cross-svg" viewBox="0 0 100 100">
+                    <path class="cross-path" d="M 38 10 L 62 10 L 62 34 L 86 34 L 86 58 L 62 58 L 62 90 L 38 90 L 38 58 L 14 58 L 14 34 L 38 34 Z" />
+                    <path class="inner-decor" d="M 43 15 L 57 15 L 57 39 L 81 39 L 81 53 L 57 53 L 57 85 L 43 85 L 43 53 L 19 53 L 19 39 L 43 39 Z" />
+                </svg>
+            </button>
+            <button class="key-btn key-down" id="btnDown" data-key="down">
+                <svg class="gothic-cross-svg" viewBox="0 0 100 100">
+                    <path class="cross-path" d="M 38 10 L 62 10 L 62 34 L 86 34 L 86 58 L 62 58 L 62 90 L 38 90 L 38 58 L 14 58 L 14 34 L 38 34 Z" />
+                    <path class="inner-decor" d="M 43 15 L 57 15 L 57 39 L 81 39 L 81 53 L 57 53 L 57 85 L 43 85 L 43 53 L 19 53 L 19 39 L 43 39 Z" />
+                </svg>
+            </button>
+            <button class="key-btn key-right" id="btnRight" data-key="right">
+                <svg class="gothic-cross-svg" viewBox="0 0 100 100">
+                    <path class="cross-path" d="M 38 10 L 62 10 L 62 34 L 86 34 L 86 58 L 62 58 L 62 90 L 38 90 L 38 58 L 14 58 L 14 34 L 38 34 Z" />
+                    <path class="inner-decor" d="M 43 15 L 57 15 L 57 39 L 81 39 L 81 53 L 57 53 L 57 85 L 43 85 L 43 53 L 19 53 L 19 39 L 43 39 Z" />
+                </svg>
+            </button>
         </div>
     </div>
 
 <script>
     // ========================================================
-    // 🦨 顶级大衣仿真皮毛动力学引擎 (Realistic Mink Fur Pro Engine)
+    // 🦨 柔顺下坠·超高密度真貂皮毛绒模拟引擎 (Realistic Mink Fur Simulation)
     // ========================================================
     const furCanvas = document.getElementById('furCanvas');
     const fctx = furCanvas.getContext('2d');
     const consoleMain = document.getElementById('consoleMain');
 
     let furStrands = [];
-    const TOTAL_STRANDS = 6800; // 超高密度堆叠出无缝皮草感
-    let animId = null;
-    let globalPhase = 0;
+    const MAX_STRANDS = 6000; // 超高密度带来厚重的皮草包裹感
+    let animationFrameId = null;
+    let timeBias = 0;
 
-    function createFurNetwork() {
+    function buildFurNetwork() {
         const rect = consoleMain.getBoundingClientRect();
-        // 增大画布基座尺寸，防裁切
-        furCanvas.width = rect.width + 150;
-        furCanvas.height = rect.height + 200;
+        furCanvas.width = rect.width + 90;
+        furCanvas.height = rect.height + 120;
 
         furStrands = [];
 
-        for (let i = 0; i < TOTAL_STRANDS; i++) {
-            // 在机壳边缘广阔空间分布毛囊根部
-            const rx = 75 + Math.random() * rect.width;
-            const ry = 75 + Math.random() * rect.height;
+        // 在掌机核心壳体及边缘种下大衣毛囊
+        for (let i = 0; i < MAX_STRANDS; i++) {
+            // 分布在画布中间偏壳体的区域
+            const rx = 45 + Math.random() * rect.width;
+            const ry = 45 + Math.random() * rect.height;
 
             const centerX = furCanvas.width / 2;
-            const outwardsX = (rx - centerX) / centerX;
+            const centerY = furCanvas.height / 2;
+            
+            // 相对中心的向外发散系数
+            const dirX = (rx - centerX) / centerX;
 
-            // 仿真奢华貂皮长度规格：大摆长毛 (38 ~ 65 像素)
-            const strandLength = 38 + Math.random() * 27;
+            // 貂皮长毛绒核心规格：厚重、长至 30~55 像素的下坠长毛
+            const length = 32 + Math.random() * 23;
             
-            const randType = Math.random();
-            let baseRGB, specRGB, maxOpacity;
+            // 设定基础色阶：吸光枪黑、深貂灰、以及极少量的亮银针毛高光
+            const randColor = Math.random();
+            let colorBase, highlightOpacity;
             
-            if (randType > 0.85) {
-                // 顶级银针护毛 (Silver Guard Hair)：捕捉冷色偏光的银白梢
-                baseRGB = [30, 32, 40];
-                specRGB = [175, 182, 207]; // 强反射银白光泽
-                maxOpacity = 0.22 + Math.random() * 0.25;
-            } else if (randType > 0.35) {
-                // 深邃丰厚主针毛 (Mink Prime Hairs)
-                baseRGB = [15, 16, 20];
-                specRGB = [62, 66, 82]; // 丝滑缎面深灰高光
-                maxOpacity = 0.82 + Math.random() * 0.15;
+            if (randColor > 0.88) {
+                // 顶级貂皮的银色发光护毛针 (Silver guard hair)
+                colorBase = [128, 133, 155];
+                highlightOpacity = 0.16 + Math.random() * 0.16;
+            } else if (randColor > 0.4) {
+                // 丰厚的深水貂灰主毛
+                colorBase = [24, 25, 31];
+                highlightOpacity = 0.75 + Math.random() * 0.15;
             } else {
-                // 底层高密绝对吸光的纯黑绒毛 (Underfur Base)
-                baseRGB = [2, 2, 4];
-                specRGB = [10, 10, 14];
-                maxOpacity = 0.92 + Math.random() * 0.08;
+                // 底层绝对吸光收缩的纯黑色绒毛
+                colorBase = [6, 6, 8];
+                highlightOpacity = 0.85 + Math.random() * 0.15;
             }
 
             furStrands.push({
                 x: rx,
                 y: ry,
-                length: strandLength,
-                outwardsX: outwardsX,
-                baseRGB: baseRGB,
-                specRGB: specRGB,
-                opacity: maxOpacity,
-                // 自然卷曲控制：引入双波增益，模拟真皮毛受挤压后的微小波浪曲度
-                crimpFreq: 2.5 + Math.random() * 3.5,
-                crimpAmp: 1.8 + Math.random() * 2.2,
-                phaseShift: Math.random() * Math.PI * 2,
-                // 根粗头细控制：根部粗壮 (1.5 ~ 2.6 像素)
-                rootWidth: 1.5 + Math.random() * 1.1
+                length: length,
+                dirX: dirX,
+                colorBase: colorBase,
+                opacity: highlightOpacity,
+                // 每根毛发拥有微小的物理刚度差异，让下垂形态错落有致
+                stiffness: 0.3 + Math.random() * 0.7,
+                wavePhase: Math.random() * Math.PI * 2
             });
         }
     }
 
-    // 通过高阶分段插值，完美渲染“根粗头细”几何形态与高动态扭转光泽
-    function renderRealisticFur() {
+    // 每一帧动态绘制毛绒流场，赋予毛绒“呼吸光泽”和“丝滑摆动”，消除坚硬塑料感
+    function renderMinkFur() {
         fctx.clearRect(0, 0, furCanvas.width, furCanvas.height);
-        globalPhase += 0.0055; // 呼吸级空气摆动流场
+        timeBias += 0.008; // 极其微弱柔和的空气波动速度
 
-        const count = furStrands.length;
-        for (let i = 0; i < count; i++) {
-            const f = furStrands[i];
+        const len = furStrands.length;
+        for (let i = 0; i < len; i++) {
+            const fur = furStrands[i];
 
-            // 动态微风抚摸末梢的效果
-            const breeze = Math.sin(globalPhase * 1.6 + f.phaseShift) * 3.2;
+            // 物理流场公式：重力强力向下拖拽拉长 + 模拟微风在空中产生的极为丝滑柔顺的波浪式摆动
+            const windInfluence = Math.sin(timeBias + fur.wavePhase) * 2.5 * (1 - fur.stiffness);
+            
+            // 目标终点：Y轴方向大幅度下垂叠加，X轴方向受边缘挤压自然外抛
+            const targetX = fur.x + (fur.dirX * 12) + windInfluence;
+            const targetY = fur.y + fur.length + 8; // 确保整体下垂感
 
-            // 根粗头细物理分段 (5段微型几何截面)
-            const segments = 5;
-            let lastX = f.x;
-            let lastY = f.y;
+            // 两个控制点产生三阶贝塞尔曲线，赋予毛发毛茸茸的交织、顺滑下坠曲线，绝不僵硬
+            const cp1X = fur.x + (fur.dirX * 4);
+            const cp1Y = fur.y + (fur.length * 0.35);
+            
+            const cp2X = fur.x + (fur.dirX * 8) + windInfluence * 0.5;
+            const cp2Y = fur.y + (fur.length * 0.7);
 
-            for (let j = 1; j <= segments; j++) {
-                const t = j / segments; // 生长进度百分比 (0.0 -> 1.0)
+            // 渐变色：从毛囊根部的深黑色，完美平滑过渡到梢部捕捉光线的金属质感色泽
+            const gradient = fctx.createLinearGradient(fur.x, fur.y, targetX, targetY);
+            gradient.addColorStop(0, `rgba(2, 2, 3, ${fur.opacity})`);
+            gradient.addColorStop(0.4, `rgba(${fur.colorBase[0]}, ${fur.colorBase[1]}, ${fur.colorBase[2]}, ${fur.opacity})`);
+            // 毛尖闪烁真实的逆光细丝高光
+            gradient.addColorStop(1, `rgba(${fur.colorBase[0] + 35}, ${fur.colorBase[1] + 38}, ${fur.colorBase[2] + 45}, ${fur.opacity * 0.9})`);
 
-                // 自然卷曲核心公式：随长度递增的复合正弦波动波纹
-                const wave = Math.sin(t * f.crimpFreq + globalPhase + f.phaseShift) * f.crimpAmp * t;
-                
-                // 物理位移：向外侧抛物下垂 + 自然卷曲增益 + 微风场拖拽
-                const curX = f.x + (f.outwardsX * 22 * t * t) + wave + (breeze * t);
-                const curY = f.y + (f.length * t) + (7 * t * t); // 强重力下坠感
-
-                // 根粗头细锥形衰减：梢部平滑收敛到 0.08 像素的极细发丝状态
-                const currentWidth = f.rootWidth * Math.pow(1 - t * 0.96, 0.85);
-
-                // 物理光学反射模拟：根部吸光 -> 梢部(t>0.75)急剧收敛出折射逆光的高动态光泽 (Specular Glint)
-                let r, g, b;
-                if (t < 0.5) {
-                    r = f.baseRGB[0]; g = f.baseRGB[1]; b = f.baseRGB[2];
-                } else {
-                    const specFactor = Math.pow((t - 0.5) / 0.5, 3); // 指数级高光聚光
-                    r = f.baseRGB[0] + (f.specRGB[0] - f.baseRGB[0]) * specFactor;
-                    g = f.baseRGB[1] + (f.specRGB[1] - f.baseRGB[1]) * specFactor;
-                    b = f.baseRGB[2] + (f.specRGB[2] - f.baseRGB[2]) * specFactor;
-                }
-
-                fctx.beginPath();
-                fctx.moveTo(lastX, lastY);
-                fctx.lineTo(curX, curY);
-                
-                fctx.strokeStyle = `rgba(${Math.floor(r)}, ${Math.floor(g)}, ${Math.floor(b)}, ${f.opacity})`;
-                fctx.lineWidth = currentWidth;
-                fctx.lineCap = 'round';
-                fctx.stroke();
-
-                lastX = curX;
-                lastY = curY;
-            }
+            fctx.beginPath();
+            fctx.moveTo(fur.x, fur.y);
+            fctx.bezierCurveTo(cp1X, cp1Y, cp2X, cp2Y, targetX, targetY);
+            fctx.strokeStyle = gradient;
+            fctx.lineWidth = 0.6 + (1 - fur.stiffness) * 0.6; // 梢部自然显细
+            fctx.stroke();
         }
 
-        animId = requestAnimationFrame(renderRealisticFur);
+        animationFrameId = requestAnimationFrame(renderMinkFur);
     }
 
-    function initFurSimulation() {
-        if (animId) cancelAnimationFrame(animId);
-        createFurNetwork();
-        renderRealisticFur();
+    function startFurEngine() {
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        buildFurNetwork();
+        renderMinkFur();
     }
 
-    // 延迟渲染防止getBoundingClientRect获取未稳定视口
-    setTimeout(initFurSimulation, 100);
-    window.addEventListener('resize', () => setTimeout(initFurSimulation, 200));
+    setTimeout(startFurEngine, 80);
+    window.addEventListener('resize', () => setTimeout(startFurEngine, 150));
 
 
     // ==========================================
-    // 🎮 游戏液晶系统（古董冷色调偏光）
+    // 🎮 游戏液晶系统（中古偏光偏冷色调）
     // ==========================================
     const canvas = document.getElementById('tetris');
     const ctx = canvas.getContext('2d');
@@ -492,108 +433,126 @@
     }
 
     function checkFilled() {
-        let blockCount = 0;
         for (let r = 0; r < ROWS; r++) {
-            for (let c = 0; c < COLS; c++) { if (board[r][c] !== 0) blockCount++; }
+            for (let c = 0; c < COLS; c++) { if (board[r][c] === 0) return false; }
         }
-        return blockCount >= (COLS * ROWS) - 2; 
+        return true;
     }
 
-    function resetGameSystem(auto = true) {
-        for (let r = 0; r < ROWS; r++) board[r].fill(0);
-        isAutoMode = auto; sequenceIndex = 0; isFinished = false;
-        piece = createPiece(); dropCounter = 0;
+    function drawBlock(x, y, isStatic) {
+        const gap = 1.5;
+        const px = x * BLOCK_SIZE + gap; const py = y * BLOCK_SIZE + gap;
+        const size = BLOCK_SIZE - gap * 2;
+
+        if (isStatic) {
+            ctx.save(); ctx.beginPath(); ctx.rect(px, py, size, size); ctx.clip();
+            if (logoLoaded) {
+                const canvasAspect = canvas.width / canvas.height;
+                const imgAspect = logoImg.width / logoImg.height;
+                let drawWidth, drawHeight, drawX, drawY;
+                if (imgAspect > canvasAspect) {
+                    drawHeight = canvas.height; drawWidth = canvas.height * imgAspect;
+                    drawX = (canvas.width - drawWidth) / 2; drawY = 0;
+                } else {
+                    drawWidth = canvas.width; drawHeight = canvas.width / imgAspect;
+                    drawX = 0; drawY = (canvas.height - drawHeight) / 2;
+                }
+                ctx.drawImage(logoImg, drawX, drawY, drawWidth, drawHeight);
+                ctx.fillStyle = 'rgba(78, 93, 108, 0.42)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            } else {
+                ctx.fillStyle = '#424d5c'; ctx.fillRect(px, py, size, size);
+            }
+            ctx.restore();
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)'; ctx.lineWidth = 1; ctx.strokeRect(px, py, size, size);
+        } else {
+            ctx.fillStyle = '#f1f5f9'; ctx.fillRect(px, py, size, size);
+            ctx.strokeStyle = '#050507'; ctx.lineWidth = 2; ctx.strokeRect(px + 0.5, py + 0.5, size - 1, size - 1);
+        }
     }
 
-    function drawScreen() {
-        ctx.fillStyle = '#0e1014'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    function draw() {
+        ctx.fillStyle = '#697d8c'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = '#5d6f7d'; ctx.lineWidth = 0.5;
+        for (let i = 0; i <= COLS; i++) { ctx.beginPath(); ctx.moveTo(i * BLOCK_SIZE, 0); ctx.lineTo(i * BLOCK_SIZE, canvas.height); ctx.stroke(); }
+        for (let j = 0; j <= ROWS; j++) { ctx.beginPath(); ctx.moveTo(0, j * BLOCK_SIZE); ctx.lineTo(canvas.width, j * BLOCK_SIZE); ctx.stroke(); }
 
-        if (logoLoaded) {
-            ctx.globalAlpha = 0.24; 
-            ctx.drawImage(logoImg, 0, 0, canvas.width, canvas.height);
-            ctx.globalAlpha = 1.0;
-        }
-
-        board.forEach((row, r) => {
-            row.forEach((value, c) => {
-                if (value !== 0) drawMatrixBlock(c, r, '#363b4d', '#656c7d');
-            });
+        board.forEach((row, y) => {
+            row.forEach((value, x) => { if (value !== 0) drawBlock(x, y, true); });
         });
-
-        if (piece) {
-            piece.matrix.forEach((row, r) => {
-                row.forEach((value, c) => {
-                    if (value !== 0) drawMatrixBlock(piece.x + c, piece.y + r, '#4e556e', '#9ba5ba');
-                });
+        if (piece && !isFinished) {
+            piece.matrix.forEach((row, y) => {
+                row.forEach((value, x) => { if (value !== 0) drawBlock(piece.x + x, piece.y + y, false); });
             });
         }
-    }
-
-    function drawMatrixBlock(x, y, darkColor, lightColor) {
-        const bx = x * BLOCK_SIZE; const by = y * BLOCK_SIZE;
-        ctx.fillStyle = darkColor; ctx.fillRect(bx + 1, by + 1, BLOCK_SIZE - 2, BLOCK_SIZE - 2);
-        ctx.fillStyle = lightColor; ctx.fillRect(bx + 2, by + 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
-        ctx.fillStyle = darkColor; ctx.fillRect(bx + 4, by + 4, BLOCK_SIZE - 8, BLOCK_SIZE - 8);
     }
 
     function update(time = 0) {
         const deltaTime = time - lastTime; lastTime = time;
-        dropCounter += deltaTime;
-        if (dropCounter > dropInterval) playerDrop();
-        drawScreen(); requestAnimationFrame(update);
+        if (!isFinished) {
+            dropCounter += deltaTime;
+            if (isAutoMode && piece) dropInterval = 50;
+            if (dropCounter > dropInterval) playerDrop();
+        }
+        draw();
+        requestAnimationFrame(update);
     }
 
-    piece = createPiece();
-    requestAnimationFrame(update);
+    function resetGameSystem(backToAuto = false) {
+        board.forEach(row => row.fill(0));
+        isFinished = false; isAutoMode = backToAuto; sequenceIndex = 0;
+        dropInterval = isAutoMode ? 180 : 750; piece = createPiece();
+    }
 
+    function startManualMode() {
+        if (!isAutoMode && !isFinished) return;
+        resetGameSystem(false); 
+    }
 
-    // ==========================================
-    // 🕹️ 实体按键映射与控制逻辑
-    // ==========================================
-    function handleManualInput(dir) {
-        if (isAutoMode || isFinished) resetGameSystem(false); 
-
-        if (dir === 'left' && piece) {
-            piece.x--;
-            if (collide(board, piece)) piece.x++;
-        } else if (dir === 'right' && piece) {
-            piece.x++;
-            if (collide(board, piece)) piece.x--;
-        } else if (dir === 'down') {
-            playerDrop();
-        } else if (dir === 'up' && piece) {
-            const m = piece.matrix;
-            const n = m.length;
-            const rotated = Array.from({ length: m[0].length }, () => Array(n).fill(0));
-            for (let r = 0; r < n; r++) {
-                for (let c = 0; c < m[r].length; c++) rotated[c][n - 1 - r] = m[r][c];
-            }
-            const oldMatrix = piece.matrix;
-            piece.matrix = rotated;
+    const keys = {
+        left: () => { piece.x--; if (collide(board, piece)) piece.x++; },
+        right: () => { piece.x++; if (collide(board, piece)) piece.x--; },
+        down: () => { playerDrop(); },
+        up: () => { 
+            const rotate = (matrix) => matrix[0].map((val, index) => matrix.map(row => row[index]).reverse());
+            const oldMatrix = piece.matrix; piece.matrix = rotate(piece.matrix);
             if (collide(board, piece)) piece.matrix = oldMatrix;
         }
-    }
+    };
 
     document.querySelectorAll('.key-btn').forEach(btn => {
-        btn.addEventListener('pointerdown', (e) => {
-            e.preventDefault();
-            handleManualInput(btn.getAttribute('data-key'));
-        });
+        const handleAction = (e) => {
+            e.preventDefault(); if (isFinished) return;
+            if (isAutoMode) startManualMode(); 
+            const keyAction = btn.getAttribute('data-key');
+            if (keys[keyAction]) keys[keyAction]();
+        };
+        btn.addEventListener('mousedown', handleAction);
+        btn.addEventListener('touchstart', handleAction);
     });
 
-    window.addEventListener('keydown', (e) => {
-        let keyMap = { 'ArrowLeft': 'left', 'ArrowRight': 'right', 'ArrowDown': 'down', 'ArrowUp': 'up', 'w': 'up', 'a': 'left', 's': 'down', 'd': 'right' };
-        if (keyMap[e.key]) {
-            e.preventDefault();
-            const btnId = 'btn' + keyMap[e.key].charAt(0).toUpperCase() + keyMap[e.key].slice(1);
-            const targetBtn = document.getElementById(btnId);
-            if (targetBtn) {
-                targetBtn.classList.add('pseudo-active');
-                setTimeout(() => targetBtn.classList.remove('pseudo-active'), 80);
-            }
-            handleManualInput(keyMap[e.key]);
+    window.addEventListener('keydown', event => {
+        if (isFinished) return;
+        const keyMap = { 'ArrowLeft': 'left', 'a': 'left', 'ArrowRight': 'right', 'd': 'right', 'ArrowDown': 'down', 's': 'down', 'ArrowUp': 'up', 'w': 'up' };
+        const action = keyMap[event.key];
+        if (action) {
+            if (isAutoMode) startManualMode();
+            keys[action]();
+            const btn = document.getElementById(`btn${action.charAt(0).toUpperCase() + action.slice(1)}`);
+            if (btn) btn.classList.add('pseudo-active');
         }
     });
+
+    window.addEventListener('keyup', event => {
+        const keyMap = { 'ArrowLeft': 'Left', 'a': 'Left', 'ArrowRight': 'Right', 'd': 'Right', 'ArrowDown': 'Down', 's': 'Down', 'ArrowUp': 'Up', 'w': 'Up' };
+        const action = keyMap[event.key];
+        if (action) {
+            const btn = document.getElementById(`btn${action}`);
+            if (btn) btn.classList.remove('pseudo-active');
+        }
+    });
+
+    piece = createPiece();
+    update();
 </script>
 </body>
 </html>
