@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
-    <title>REALISTIC FUR COAT GOTHIC HANDHELD</title>
+    <title>REALISTIC FUR COAT COUTURE HANDHELD</title>
     <style>
         :root {
             /* 奢华吸光貂皮基底 */
-            --mink-core: #040405;
+            --mink-core: #030304;
             
-            /* 哥特无描边一体化按钮材质 */
-            --gothic-metal-top: #15171c;
-            --gothic-metal-shadow: #08090b;
-            --metal-silver-glint: #8288a1;
+            /* 哥特一体化3D按钮材质 */
+            --gothic-metal-top: #1e212b;
+            --gothic-metal-shadow: #050608;
         }
 
         body {
@@ -22,65 +21,76 @@
             color: #ffffff;
             font-family: 'Courier New', Courier, monospace;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             overflow: hidden;
         }
 
+        /* 📱 手机端等比全景缩放容器：确保整个游戏机和下坠皮草在移动端完美展露 */
+        .viewport-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+
         /* 掌机核心壳体 */
         .console-wrapper {
             background-color: var(--mink-core);
-            padding: 50px 45px 65px 45px;
-            border-radius: 46px;
+            padding: 55px 50px 70px 50px;
+            border-radius: 48px;
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
             box-shadow: 
-                0 60px 120px rgba(0, 0, 0, 0.99),
-                inset 0 0 50px rgba(0, 0, 0, 0.95);
+                0 65px 130px rgba(0, 0, 0, 0.98),
+                inset 0 0 55px rgba(0, 0, 0, 0.95);
+            /* 锁定PC端基础尺寸 */
+            width: 300px; 
+            flex-shrink: 0;
         }
 
-        /* 🦨 仿真皮毛高密流场画布：为长毛下坠与微卷外抛提供极致空间 */
+        /* 🦨 仿真皮毛高密流场画布：为长毛下坠与自然卷曲留出绝对富余空间 */
         #furCanvas {
             position: absolute;
-            top: -60px;
-            left: -60px;
-            width: calc(100% + 120px);
-            height: calc(100% + 160px); /* 底部预留极深的空间，供长毛重力下坠垂挂 */
+            top: -75px;
+            left: -75px;
+            width: calc(100% + 150px);
+            height: calc(100% + 200px); /* 底部极大延展，容纳貂皮大衣长毛重力下垂的层叠感 */
             pointer-events: none;
-            z-index: 2; /* 位于机壳底色上方，实体按键与屏幕下方 */
+            z-index: 2; 
         }
 
         /* 铁铸防折射屏幕外框 */
         .screen-frame {
             background-color: #090a0d;
             padding: 24px 24px 30px 24px;
-            border-radius: 20px;
+            border-radius: 22px;
             box-shadow: 
-                inset 6px 8px 25px rgba(0,0,0,0.98),
-                0 8px 20px rgba(0, 0, 0, 0.95);
-            margin-bottom: 50px;
+                inset 6px 8px 30px rgba(0,0,0,0.99),
+                0 10px 25px rgba(0, 0, 0, 0.95);
+            margin-bottom: 55px;
             position: relative;
-            border: 1px solid #14161c;
+            border: 1px solid #161820;
             z-index: 4; 
         }
 
         .screen-container {
             position: relative;
-            border-radius: 4px;
+            border-radius: 5px;
             overflow: hidden;
-            box-shadow: inset 0 0 40px rgba(0,0,0,0.98);
+            box-shadow: inset 0 0 45px rgba(0,0,0,0.99);
         }
 
-        /* LCD偏光扫描线与古董偏光玻璃 */
+        /* 偏光复古扫描线 */
         .screen-container::before {
             content: "";
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: repeating-linear-gradient(rgba(0, 0, 0, 0.22) 0px, rgba(0, 0, 0, 0.22) 1px, transparent 1px, transparent 3px);
+            background: repeating-linear-gradient(rgba(0, 0, 0, 0.24) 0px, rgba(0, 0, 0, 0.24) 1px, transparent 1px, transparent 3px);
             pointer-events: none;
             z-index: 5;
         }
@@ -88,7 +98,7 @@
             content: "";
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.035) 0%, rgba(255,255,255,0.003) 60%, transparent 100%);
+            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.002) 60%, transparent 100%);
             pointer-events: none;
             z-index: 6;
         }
@@ -96,7 +106,7 @@
         .screen-glitch-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #020304; opacity: 0;
+            background-color: #020203; opacity: 0;
             pointer-events: none;
             transition: opacity 0.35s ease-in-out;
             z-index: 10;
@@ -105,21 +115,21 @@
 
         canvas { display: block; }
 
-        /* 按键区控制布局：增大间距容纳巨型十字架 */
+        /* 按键区控制布局 */
         .controls-wrapper {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 28px;
-            width: 270px;
+            gap: 24px;
+            width: 280px;
             justify-items: center;
             align-items: center;
             z-index: 4;
         }
 
-        /* ✟ 巨型一体化哥特金属十字架实体按键（无描边） ✟ */
+        /* ✟ 真实立体浮雕 哥特十字架实体按键（无描边，强3D感） ✟ */
         .key-btn {
-            width: 82px;  /* 显著增大尺寸 */
-            height: 82px;
+            width: 86px;  
+            height: 86px;
             background: transparent;
             border: none;
             cursor: pointer;
@@ -130,151 +140,166 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 依靠内部多层光影滤镜和渐变渲染3D实体按钮，去除所有描边(Stroke) */
+        /* 纯粹依靠双重悬浮滤镜与斜面渐变渲染出厚重立体按钮，不带生硬描边 */
         .key-btn .gothic-cross-svg {
             width: 100%;
             height: 100%;
-            filter: drop-shadow(4px 8px 14px rgba(0, 0, 0, 0.95));
-            transition: transform 0.06s cubic-bezier(0.2, 0.8, 0.2, 1);
+            /* 双层阴影：下层极深长阴影突出悬浮高度，上层软阴影过渡 */
+            filter: drop-shadow(0px 12px 18px rgba(0, 0, 0, 0.98)) drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.8));
+            transition: transform 0.06s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.06s ease;
         }
 
-        /* 十字架主体：无描边，全靠斜面明暗过渡展现质感 */
+        /* 十字架基座：依靠渐变塑造三维斜凸感 */
         .key-btn .cross-body {
             fill: url(#gothicMetalGrad);
-            stroke: none; /* 彻底去除描边 */
+            stroke: none; 
         }
 
-        /* 内部立体斜角浮雕面 */
+        /* 顶部受光立体层：高光内嵌 */
         .key-btn .cross-bevel {
             fill: url(#bevelGrad);
             stroke: none;
         }
 
-        /* 物理重击下沉反馈 */
+        /* 物理重压下沉反馈 */
         .key-btn:active .gothic-cross-svg, .key-btn.pseudo-active .gothic-cross-svg {
-            transform: translateY(4px) scale(0.96);
-            filter: drop-shadow(1px 2px 4px rgba(0, 0, 0, 0.95));
+            transform: translateY(5px) scale(0.95);
+            filter: drop-shadow(0px 3px 5px rgba(0, 0, 0, 0.95));
         }
 
         .key-up { grid-column: 2; }
         .key-left { grid-column: 1; grid-row: 2; }
         .key-down { grid-column: 2; grid-row: 2; }
         .key-right { grid-column: 3; grid-row: 2; }
+
+        /* 移动端媒体查询：当屏幕宽度小于掌机连同毛发宽度时，自动进行视口微缩 */
+        @media (max-width: 480px) {
+            .viewport-container {
+                transform: scale(0.78); /* 缩小至78%，使得整体在小屏手机上也能完全露出来 */
+                transform-origin: center center;
+            }
+        }
+        @media (max-width: 380px) {
+            .viewport-container {
+                transform: scale(0.68); /* 极小屏幕进一步缩放 */
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div class="console-wrapper" id="consoleMain">
-        <!-- 🔬 巨型仿真皮毛（根粗头细、自然卷曲、高动态光泽）动力学引擎画布 -->
-        <canvas id="furCanvas"></canvas>
+    <div class="viewport-container">
+        <div class="console-wrapper" id="consoleMain">
+            <!-- 🔬 奢华皮草动力学引擎画布（根粗头细、自然卷曲、针毛反光） -->
+            <canvas id="furCanvas"></canvas>
 
-        <!-- 屏幕区 -->
-        <div class="screen-frame">
-            <div class="screen-container">
-                <div class="screen-glitch-overlay" id="screenOverlay"></div>
-                <canvas id="tetris"></canvas>
+            <!-- 屏幕区 -->
+            <div class="screen-frame">
+                <div class="screen-container">
+                    <div class="screen-glitch-overlay" id="screenOverlay"></div>
+                    <canvas id="tetris"></canvas>
+                </div>
             </div>
-        </div>
 
-        <!-- ✟ 巨型无描边一体化哥特十字架控制面板 ✟ -->
-        <div class="controls-wrapper">
-            <!-- 共享的材质与光影渐变定义定义池 -->
-            <svg style="width:0; height:0; position:absolute;">
-                <defs>
-                    <!-- 金属实体表面渐变 -->
-                    <linearGradient id="gothicMetalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#22252e" />
-                        <stop offset="40%" stop-color="#14161a" />
-                        <stop offset="100%" stop-color="#090a0c" />
-                    </linearGradient>
-                    <!-- 立体斜面受光渐变（产生冷银反光与内陷阴影） -->
-                    <linearGradient id="bevelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stop-color="#4e5263" stop-opacity="0.6"/>
-                        <stop offset="30%" stop-color="#1a1c22" stop-opacity="0.8"/>
-                        <stop offset="100%" stop-color="#020203" stop-opacity="0.95"/>
-                    </linearGradient>
-                </defs>
-            </svg>
+            <!-- ✟ 3D无描边一体化哥特十字架控制面板 ✟ -->
+            <div class="controls-wrapper">
+                <!-- 共享材质光影定义池 -->
+                <svg style="width:0; height:0; position:absolute;">
+                    <defs>
+                        <!-- 黑钛合金实体斜面渐变（塑造光线从左上角射入的立体厚度） -->
+                        <linearGradient id="gothicMetalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#2d323f" />
+                            <stop offset="30%" stop-color="#16181f" />
+                            <stop offset="70%" stop-color="#090a0d" />
+                            <stop offset="100%" stop-color="#020203" />
+                        </linearGradient>
+                        <!-- 顶部浮雕受光面冷银反光 -->
+                        <linearGradient id="bevelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#5a6075" stop-opacity="0.75"/>
+                            <stop offset="25%" stop-color="#22252d" stop-opacity="0.9"/>
+                            <stop offset="100%" stop-color="#050608" stop-opacity="0.98"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
 
-            <button class="key-btn key-up" id="btnUp" data-key="up">
-                <svg class="gothic-cross-svg" viewBox="0 0 100 100">
-                    <path class="cross-body" d="M 36 6 L 64 6 L 64 32 L 94 32 L 94 60 L 64 60 L 64 94 L 36 94 L 36 60 L 6 60 L 6 32 L 36 32 Z" />
-                    <path class="cross-bevel" d="M 40 10 L 60 10 L 60 36 L 90 36 L 90 56 L 60 56 L 60 90 L 40 90 L 40 56 L 10 56 L 10 36 L 40 36 Z" />
-                </svg>
-            </button>
-            <button class="key-btn key-left" id="btnLeft" data-key="left">
-                <svg class="gothic-cross-svg" viewBox="0 0 100 100">
-                    <path class="cross-body" d="M 36 6 L 64 6 L 64 32 L 94 32 L 94 60 L 64 60 L 64 94 L 36 94 L 36 60 L 6 60 L 6 32 L 36 32 Z" />
-                    <path class="cross-bevel" d="M 40 10 L 60 10 L 60 36 L 90 36 L 90 56 L 60 56 L 60 90 L 40 90 L 40 56 L 10 56 L 10 36 L 40 36 Z" />
-                </svg>
-            </button>
-            <button class="key-btn key-down" id="btnDown" data-key="down">
-                <svg class="gothic-cross-svg" viewBox="0 0 100 100">
-                    <path class="cross-body" d="M 36 6 L 64 6 L 64 32 L 94 32 L 94 60 L 64 60 L 64 94 L 36 94 L 36 60 L 6 60 L 6 32 L 36 32 Z" />
-                    <path class="cross-bevel" d="M 40 10 L 60 10 L 60 36 L 90 36 L 90 56 L 60 56 L 60 90 L 40 90 L 40 56 L 10 56 L 10 36 L 40 36 Z" />
-                </svg>
-            </button>
-            <button class="key-btn key-right" id="btnRight" data-key="right">
-                <svg class="gothic-cross-svg" viewBox="0 0 100 100">
-                    <path class="cross-body" d="M 36 6 L 64 6 L 64 32 L 94 32 L 94 60 L 64 60 L 64 94 L 36 94 L 36 60 L 6 60 L 6 32 L 36 32 Z" />
-                    <path class="cross-bevel" d="M 40 10 L 60 10 L 60 36 L 90 36 L 90 56 L 60 56 L 60 90 L 40 90 L 40 56 L 10 56 L 10 36 L 40 36 Z" />
-                </svg>
-            </button>
+                <button class="key-btn key-up" id="btnUp" data-key="up">
+                    <svg class="gothic-cross-svg" viewBox="0 0 100 100">
+                        <path class="cross-body" d="M 36 6 L 64 6 L 64 32 L 94 32 L 94 60 L 64 60 L 64 94 L 36 94 L 36 60 L 6 60 L 6 32 L 36 32 Z" />
+                        <path class="cross-bevel" d="M 40 10 L 60 10 L 60 36 L 90 36 L 90 56 L 60 56 L 60 90 L 40 90 L 40 56 L 10 56 L 10 36 L 40 36 Z" />
+                    </svg>
+                </button>
+                <button class="key-btn key-left" id="btnLeft" data-key="left">
+                    <svg class="gothic-cross-svg" viewBox="0 0 100 100">
+                        <path class="cross-body" d="M 36 6 L 64 6 L 64 32 L 94 32 L 94 60 L 64 60 L 64 94 L 36 94 L 36 60 L 6 60 L 6 32 L 36 32 Z" />
+                        <path class="cross-bevel" d="M 40 10 L 60 10 L 60 36 L 90 36 L 90 56 L 60 56 L 60 90 L 40 90 L 40 56 L 10 56 L 10 36 L 40 36 Z" />
+                    </svg>
+                </button>
+                <button class="key-btn key-down" id="btnDown" data-key="down">
+                    <svg class="gothic-cross-svg" viewBox="0 0 100 100">
+                        <path class="cross-body" d="M 36 6 L 64 6 L 64 32 L 94 32 L 94 60 L 64 60 L 64 94 L 36 94 L 36 60 L 6 60 L 6 32 L 36 32 Z" />
+                        <path class="cross-bevel" d="M 40 10 L 60 10 L 60 36 L 90 36 L 90 56 L 60 56 L 60 90 L 40 90 L 40 56 L 10 56 L 10 36 L 40 36 Z" />
+                    </svg>
+                </button>
+                <button class="key-btn key-right" id="btnRight" data-key="right">
+                    <svg class="gothic-cross-svg" viewBox="0 0 100 100">
+                        <path class="cross-body" d="M 36 6 L 64 6 L 64 32 L 94 32 L 94 60 L 64 60 L 64 94 L 36 94 L 36 60 L 6 60 L 6 32 L 36 32 Z" />
+                        <path class="cross-bevel" d="M 40 10 L 60 10 L 60 36 L 90 36 L 90 56 L 60 56 L 60 90 L 40 90 L 40 56 L 10 56 L 10 36 L 40 36 Z" />
+                    </svg>
+                </button>
+            </div>
         </div>
     </div>
 
 <script>
     // ========================================================
-    // 🦨 巨型仿真皮毛动力学渲染引擎 (Advanced Realistic Fur Simulation)
+    // 🦨 顶级大衣仿真皮毛动力学引擎 (Realistic Mink Fur Pro Engine)
     // ========================================================
     const furCanvas = document.getElementById('furCanvas');
     const fctx = furCanvas.getContext('2d');
     const consoleMain = document.getElementById('consoleMain');
 
     let furStrands = [];
-    const TOTAL_STRANDS = 6500; // 高密度堆叠出厚重皮草效果
+    const TOTAL_STRANDS = 6800; // 超高密度堆叠出无缝皮草感
     let animId = null;
     let globalPhase = 0;
 
     function createFurNetwork() {
         const rect = consoleMain.getBoundingClientRect();
-        furCanvas.width = rect.width + 120;
-        furCanvas.height = rect.height + 160;
+        // 增大画布基座尺寸，防裁切
+        furCanvas.width = rect.width + 150;
+        furCanvas.height = rect.height + 200;
 
         furStrands = [];
 
         for (let i = 0; i < TOTAL_STRANDS; i++) {
-            // 在机壳及周围的广阔空间内打散毛囊根部
-            const rx = 60 + Math.random() * rect.width;
-            const ry = 60 + Math.random() * rect.height;
+            // 在机壳边缘广阔空间分布毛囊根部
+            const rx = 75 + Math.random() * rect.width;
+            const ry = 75 + Math.random() * rect.height;
 
             const centerX = furCanvas.width / 2;
-            
-            // 边缘发散系数
             const outwardsX = (rx - centerX) / centerX;
 
-            // 真实的奢华大衣长毛绒长度：35 ~ 60 像素
-            const strandLength = 35 + Math.random() * 25;
+            // 仿真奢华貂皮长度规格：大摆长毛 (38 ~ 65 像素)
+            const strandLength = 38 + Math.random() * 27;
             
-            // 仿真貂皮三层光学色阶设计
             const randType = Math.random();
             let baseRGB, specRGB, maxOpacity;
             
-            if (randType > 0.86) {
-                // 银光护针毛 (Silver Guard Hair)：捕捉强冷光的白色反光梢
-                baseRGB = [35, 37, 46];
-                specRGB = [165, 172, 196]; // 极亮的白银反光
-                maxOpacity = 0.2 + Math.random() * 0.25;
+            if (randType > 0.85) {
+                // 顶级银针护毛 (Silver Guard Hair)：捕捉冷色偏光的银白梢
+                baseRGB = [30, 32, 40];
+                specRGB = [175, 182, 207]; // 强反射银白光泽
+                maxOpacity = 0.22 + Math.random() * 0.25;
             } else if (randType > 0.35) {
-                // 水水水水水水水水水水水水水水水水水水水水水水水水水水水水水水水水主毛
-                baseRGB = [18, 19, 24];
-                specRGB = [58, 62, 77]; // 柔和的深灰缎面高光
-                maxOpacity = 0.8 + Math.random() * 0.15;
+                // 深邃丰厚主针毛 (Mink Prime Hairs)
+                baseRGB = [15, 16, 20];
+                specRGB = [62, 66, 82]; // 丝滑缎面深灰高光
+                maxOpacity = 0.82 + Math.random() * 0.15;
             } else {
-                // 根部绝对吸光的黑暗绒毛基底
-                baseRGB = [3, 3, 5];
-                specRGB = [12, 12, 16];
-                maxOpacity = 0.9 + Math.random() * 0.1;
+                // 底层高密绝对吸光的纯黑绒毛 (Underfur Base)
+                baseRGB = [2, 2, 4];
+                specRGB = [10, 10, 14];
+                maxOpacity = 0.92 + Math.random() * 0.08;
             }
 
             furStrands.push({
@@ -285,54 +310,52 @@
                 baseRGB: baseRGB,
                 specRGB: specRGB,
                 opacity: maxOpacity,
-                // 自然扭曲卷曲频率与独立相位
-                crimpFreq: 2 + Math.random() * 3,
-                crimpAmp: 1.5 + Math.random() * 2,
+                // 自然卷曲控制：引入双波增益，模拟真皮毛受挤压后的微小波浪曲度
+                crimpFreq: 2.5 + Math.random() * 3.5,
+                crimpAmp: 1.8 + Math.random() * 2.2,
                 phaseShift: Math.random() * Math.PI * 2,
-                // 毛发根部粗细：1.4 ~ 2.4 像素
-                rootWidth: 1.4 + Math.random() * 1.0
+                // 根粗头细控制：根部粗壮 (1.5 ~ 2.6 像素)
+                rootWidth: 1.5 + Math.random() * 1.1
             });
         }
     }
 
-    // 通过绘制极短的分段，完美还原“根粗头细”的几何截面与高动态反射
+    // 通过高阶分段插值，完美渲染“根粗头细”几何形态与高动态扭转光泽
     function renderRealisticFur() {
         fctx.clearRect(0, 0, furCanvas.width, furCanvas.height);
-        globalPhase += 0.006; // 维持丝滑柔软感的极微弱气流摆动
+        globalPhase += 0.0055; // 呼吸级空气摆动流场
 
         const count = furStrands.length;
         for (let i = 0; i < count; i++) {
             const f = furStrands[i];
 
-            // 气流对毛发末端的微弱轻拂
-            const breeze = Math.sin(globalPhase * 1.5 + f.phaseShift) * 3;
+            // 动态微风抚摸末梢的效果
+            const breeze = Math.sin(globalPhase * 1.6 + f.phaseShift) * 3.2;
 
-            // 根粗头细分段绘制技术 (Tapered Segmentation)
-            // 将单根毛发细分为 5 个物理节段，独立计算卷曲度与宽度渐变
+            // 根粗头细物理分段 (5段微型几何截面)
             const segments = 5;
             let lastX = f.x;
             let lastY = f.y;
 
             for (let j = 1; j <= segments; j++) {
-                const t = j / segments; // 沿毛发生长方向的百分比 (0 到 1)
+                const t = j / segments; // 生长进度百分比 (0.0 -> 1.0)
 
-                // 核心自然卷曲公式：重力强力向下 + 随长度递增的复合正弦波扭曲
+                // 自然卷曲核心公式：随长度递增的复合正弦波动波纹
                 const wave = Math.sin(t * f.crimpFreq + globalPhase + f.phaseShift) * f.crimpAmp * t;
                 
-                // 最终坐标：向外抛物线下挂，结合微风与自身的波浪卷曲
-                const curX = f.x + (f.outwardsX * 18 * t * t) + wave + (breeze * t);
-                const curY = f.y + (f.length * t) + (6 * t * t); // 模拟重力垂坠下垂
+                // 物理位移：向外侧抛物下垂 + 自然卷曲增益 + 微风场拖拽
+                const curX = f.x + (f.outwardsX * 22 * t * t) + wave + (breeze * t);
+                const curY = f.y + (f.length * t) + (7 * t * t); // 强重力下坠感
 
-                // 计算该段的宽度：从根部的全宽，在线性或指数级平滑衰减至梢部的 0.1 像素超细发尖
-                const currentWidth = f.rootWidth * (1 - t * 0.95);
+                // 根粗头细锥形衰减：梢部平滑收敛到 0.08 像素的极细发丝状态
+                const currentWidth = f.rootWidth * Math.pow(1 - t * 0.96, 0.85);
 
-                // 物理光学反射模拟：根部全黑吸光 -> 中段展现貂皮主色 -> 梢部(t>0.7)极速转化为specRGB真实偏光高光
+                // 物理光学反射模拟：根部吸光 -> 梢部(t>0.75)急剧收敛出折射逆光的高动态光泽 (Specular Glint)
                 let r, g, b;
                 if (t < 0.5) {
                     r = f.baseRGB[0]; g = f.baseRGB[1]; b = f.baseRGB[2];
                 } else {
-                    // 梢部高光的动态插值公式
-                    const specFactor = Math.pow((t - 0.5) / 0.5, 2); // 梢部指数级聚光
+                    const specFactor = Math.pow((t - 0.5) / 0.5, 3); // 指数级高光聚光
                     r = f.baseRGB[0] + (f.specRGB[0] - f.baseRGB[0]) * specFactor;
                     g = f.baseRGB[1] + (f.specRGB[1] - f.baseRGB[1]) * specFactor;
                     b = f.baseRGB[2] + (f.specRGB[2] - f.baseRGB[2]) * specFactor;
@@ -361,8 +384,9 @@
         renderRealisticFur();
     }
 
-    setTimeout(initFurSimulation, 60);
-    window.addEventListener('resize', () => setTimeout(initFurSimulation, 150));
+    // 延迟渲染防止getBoundingClientRect获取未稳定视口
+    setTimeout(initFurSimulation, 100);
+    window.addEventListener('resize', () => setTimeout(initFurSimulation, 200));
 
 
     // ==========================================
@@ -482,25 +506,24 @@
     }
 
     function drawScreen() {
-        ctx.fillStyle = '#0f1115'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#0e1014'; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         if (logoLoaded) {
-            ctx.globalAlpha = 0.22; // 极简偏光背景效果
+            ctx.globalAlpha = 0.24; 
             ctx.drawImage(logoImg, 0, 0, canvas.width, canvas.height);
             ctx.globalAlpha = 1.0;
         }
 
-        // 渲染像素块
         board.forEach((row, r) => {
             row.forEach((value, c) => {
-                if (value !== 0) drawMatrixBlock(c, r, '#3a3f52', '#6b7280');
+                if (value !== 0) drawMatrixBlock(c, r, '#363b4d', '#656c7d');
             });
         });
 
         if (piece) {
             piece.matrix.forEach((row, r) => {
                 row.forEach((value, c) => {
-                    if (value !== 0) drawMatrixBlock(piece.x + c, piece.y + r, '#525a75', '#a0aabf');
+                    if (value !== 0) drawMatrixBlock(piece.x + c, piece.y + r, '#4e556e', '#9ba5ba');
                 });
             });
         }
@@ -525,10 +548,10 @@
 
 
     // ==========================================
-    // 🕹️ 巨型无描边一体化实体十字键操控映射
+    // 🕹️ 实体按键映射与控制逻辑
     // ==========================================
     function handleManualInput(dir) {
-        if (isAutoMode || isFinished) resetGameSystem(false); // 强制切入手动档
+        if (isAutoMode || isFinished) resetGameSystem(false); 
 
         if (dir === 'left' && piece) {
             piece.x--;
@@ -539,7 +562,6 @@
         } else if (dir === 'down') {
             playerDrop();
         } else if (dir === 'up' && piece) {
-            // 实体上键旋转核心矩阵逻辑
             const m = piece.matrix;
             const n = m.length;
             const rotated = Array.from({ length: m[0].length }, () => Array(n).fill(0));
