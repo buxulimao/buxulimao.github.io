@@ -1,21 +1,10 @@
----
-layout: default
-title: 不许礼貌
----
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
     <title>不许礼貌</title>
-    
-    <!-- 🌟 全局浏览器小图标 -->
-    <link rel="icon" href="{{ '/images/tougu.png' | relative_url }}" type="image/png">
-
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
-
         :root {
             /* 奢华吸光貂皮基底 */
             --mink-black: #060608;
@@ -26,8 +15,7 @@ title: 不许礼貌
             --metal-silver-highlight: #70758c;
         }
 
-        /* 页面基础全局样式 */
-        html, body {
+        body {
             margin: 0;
             padding: 0;
             background-color: #010102; 
@@ -38,195 +26,10 @@ title: 不许礼貌
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
-            overflow-y: auto; /* 允许纵向滑动，防止移动端掌机遮挡顶部菜单 */
-            box-sizing: border-box;
+            overflow: hidden;
         }
 
-        /* ---------------------------------------------------------- */
-        /* ✟ 顶部 Menu 修正样式 ✟ */
-        /* ---------------------------------------------------------- */
-        
-        /* 自动注入顶部防遮挡边距 */
-        @media (max-width: 768px) {
-            body { padding-top: 60px !important; }
-        }
-        @media (min-width: 769px) {
-            body { padding-top: 90px !important; }
-        }
-
-        #header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: transparent;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            z-index: 1000010 !important;
-            box-sizing: border-box;
-            padding: 0 40px;
-            pointer-events: none;
-        }
-
-        /* Logo 适配：未展开时在黑底上显示原色/白色 */
-        .logo-btn {
-            width: auto;
-            cursor: pointer;
-            position: relative;
-            z-index: 10003;
-            transition: transform 0.3s, filter 0.3s; 
-            pointer-events: auto;
-            filter: none;
-        }
-        .logo-btn:hover { transform: scale(1.02); }
-
-        .menu-trigger {
-            position: absolute;
-            right: 40px;
-            top: 0;
-            display: flex;
-            align-items: center;
-            z-index: 10002;
-            cursor: pointer;
-            pointer-events: auto;
-        }
-        
-        .menu-trigger-icon { 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: space-between;
-        }
-
-        /* 三道杠图标：未展开时为白色 */
-        .menu-trigger-icon span { 
-            display: block; 
-            width: 100%; 
-            background: #ffffff; 
-            transition: background 0.3s, transform 0.3s; 
-        }
-
-        /* 下拉菜单：纯黑背景 + 暗灰下边框 */
-        #dropdown-menu {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            transform: translateY(-100%); 
-            background: #000000; 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
-            border-bottom: 1px solid #1a1a1a;
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            box-sizing: border-box;
-            z-index: 10001;
-            display: flex;
-            justify-content: flex-end; 
-            pointer-events: auto;
-        }
-        #dropdown-menu.show { transform: translateY(0); }
-
-        .menu-links { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: flex-end;
-            text-align: right;
-            gap: 24px; 
-        }
-        
-        .menu-item {
-            font-family: "Helvetica Neue", Helvetica, Arial, -apple-system, sans-serif;
-            font-size: 20px; 
-            font-weight: 700; 
-            letter-spacing: 0.15em; 
-            color: #ffffff; 
-            cursor: pointer;
-            transition: opacity 0.25s ease;
-            white-space: nowrap;
-            margin-right: -0.15em; 
-        }
-        .menu-item:hover { opacity: 0.6; }
-
-        /* 公众号弹窗样式 */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.85); 
-            backdrop-filter: blur(6px); 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 999999 !important;
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        .modal-content {
-            background-color: #ffffff; 
-            border: 1px solid #000000; 
-            padding: 35px 35px 45px 35px; 
-            text-align: center;
-            max-width: 320px;
-            width: 90%;
-            position: relative;
-            transform: scale(0.96); 
-            transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            box-sizing: border-box;
-        }
-
-        .modal-overlay.active .modal-content { transform: scale(1); }
-
-        .modal-title {
-            font-family: 'UnifrakturMaguntia', cursive;
-            font-size: 26px;
-            margin-bottom: 25px;
-            color: #000000;
-        }
-
-        .qrcode-img {
-            width: 160px; 
-            height: 160px;
-            object-fit: contain;
-            margin: 0 auto;
-            display: block;
-            filter: none !important; 
-        }
-
-        @media (max-width: 768px) {
-            #header { height: 40px; padding: 0 20px; }
-            .logo-btn { height: 20px; } 
-            .menu-trigger { height: 40px; right: 20px; }
-            .menu-trigger-icon { width: 18px; height: 10px; }
-            .menu-trigger-icon span { height: 1.5px; }
-            #dropdown-menu { padding: 70px 20px 40px; }
-        }
-        @media (min-width: 769px) {
-            #header { height: 55px; }
-            .logo-btn { height: 35px; } 
-            .menu-trigger { height: 55px; }
-            .menu-trigger-icon { width: 24px; height: 13px; } 
-            .menu-trigger-icon span { height: 2px; }
-            #dropdown-menu { padding: 90px 40px 45px; }
-        }
-
-        /* ---------------------------------------------------------- */
-        /* 掌机主体与毛茸画布样式 */
-        /* ---------------------------------------------------------- */
+        /* 掌机核心主体 */
         .console-wrapper {
             background-color: var(--mink-black);
             padding: 45px 40px 55px 40px;
@@ -238,19 +41,20 @@ title: 不许礼貌
             box-shadow: 
                 0 50px 100px rgba(0, 0, 0, 0.99),
                 inset 0 0 40px rgba(0, 0, 0, 0.95);
-            margin-bottom: 40px;
         }
 
+        /* 🦨 动态高密度奢华长毛绒下坠画布：溢出范围更大，允许长毛向下垂挂包裹边缘 */
         #furCanvas {
             position: absolute;
             top: -45px;
             left: -45px;
             width: calc(100% + 90px);
-            height: calc(100% + 120px);
+            height: calc(100% + 120px); /* 底部大幅加长，给毛发下坠提供物理堆叠空间 */
             pointer-events: none;
-            z-index: 2;
+            z-index: 2; /* 浮在机壳底色之上，但在硬件按键与屏幕下方 */
         }
 
+        /* 铁铸屏幕外框 */
         .screen-frame {
             background-color: #0b0c0f;
             padding: 22px 22px 28px 22px;
@@ -271,6 +75,7 @@ title: 不许礼貌
             box-shadow: inset 0 0 35px rgba(0,0,0,0.98);
         }
 
+        /* LCD偏光扫描线与折射玻璃 */
         .screen-container::before {
             content: "";
             position: absolute;
@@ -300,6 +105,7 @@ title: 不许礼貌
 
         canvas { display: block; }
 
+        /* 按键区控制布局 */
         .controls-wrapper {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -310,6 +116,7 @@ title: 不许礼貌
             z-index: 4;
         }
 
+        /* ✟ 完整一体化 哥特金属十字架实体按键 ✟ */
         .key-btn {
             width: 68px;
             height: 68px;
@@ -323,6 +130,7 @@ title: 不许礼貌
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* 使用 SVG 路径塑造真正不分割的实体哥特十字架，去除任何红点 */
         .key-btn .gothic-cross-svg {
             width: 100%;
             height: 100%;
@@ -330,6 +138,7 @@ title: 不许礼貌
             transition: transform 0.05s ease;
         }
 
+        /* 填充高对比度的银黑重铁质感与冷银高光边缘 */
         .key-btn .cross-path {
             fill: var(--gothic-solid-metal);
             stroke: var(--metal-silver-highlight);
@@ -337,19 +146,21 @@ title: 不许礼貌
             transition: all 0.05s ease;
         }
 
+        /* 浮雕内部装饰线阴影 */
         .key-btn .inner-decor {
             fill: #08090b;
             stroke: #1b1d24;
             stroke-width: 0.8px;
         }
 
+        /* 物理重击动作：整体下凹、银边高光收敛、暗部加深 */
         .key-btn:active .gothic-cross-svg, .key-btn.pseudo-active .gothic-cross-svg {
             transform: translateY(3px) scale(0.97);
         }
 
         .key-btn:active .cross-path, .key-btn.pseudo-active .cross-path {
             fill: #0b0c0e;
-            stroke: #484b59;
+            stroke: #484b59; /* 按下时金属边缘光变暗 */
         }
 
         .key-up { grid-column: 2; }
@@ -360,39 +171,6 @@ title: 不许礼貌
 </head>
 <body>
 
-    <!-- ✟ 1. 顶部固定导航栏 ✟ -->
-    <header id="header">
-        <img class="logo-btn" 
-             src="{{ '/images/logo.png' | relative_url }}" 
-             alt="LOGO" 
-             id="headerLogoBtn"
-             onclick="window.location.href='https://andseethingsasido.github.io/'">
-
-        <div class="menu-trigger" id="menuTrigger">
-            <div class="menu-trigger-icon">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-
-        <nav id="dropdown-menu">
-            <div class="menu-links">
-                <span class="menu-item" onclick="window.location.href='https://andseethingsasido.github.io/and666/'">商店</span>
-                <span class="menu-item" onclick="openWeChatCard()">公众号</span>
-            </div>
-        </nav>
-    </header>
-
-    <!-- 独立弹窗组件：公众号遮罩层 -->
-    <div class="modal-overlay" id="qrcodeModal">
-        <div class="modal-content">
-            <div class="modal-title">Contact</div>
-            <img src="{{ '/images/gozhonghao.jpg' | relative_url }}" alt="gozhonghao" class="qrcode-img" id="modalQrcodeImg">
-        </div>
-    </div>
-
-    <!-- ✟ 2. 掌机主体 ✟ -->
     <div class="console-wrapper" id="consoleMain">
         <!-- 🔬 高精貂皮长毛绒柔顺动力学画布 -->
         <canvas id="furCanvas"></canvas>
@@ -435,85 +213,6 @@ title: 不许礼貌
     </div>
 
 <script>
-    // ==========================================
-    // ✟ 顶部菜单交互脚本 ✟
-    // ==========================================
-    const trigger = document.getElementById('menuTrigger');
-    const menu = document.getElementById('dropdown-menu');
-    const logo = document.getElementById('headerLogoBtn');
-    const modal = document.getElementById('qrcodeModal');
-
-    let isHoveringTrigger = false;
-    let isHoveringMenu = false;
-    let isHoveringLogo = false;
-    let isClickOpen = false;
-
-    function openMenu() {
-        menu.classList.add('show');
-        trigger.classList.add('active');
-        if(logo) logo.classList.add('active');
-    }
-
-    function closeMenu() {
-        menu.classList.remove('show');
-        isClickOpen = false;
-        if (modal && !modal.classList.contains('active')) {
-            trigger.classList.remove('active');
-            if(logo) logo.classList.remove('active');
-        }
-    }
-
-    function checkMenuStatus() {
-        setTimeout(() => {
-            if (!isHoveringTrigger && !isHoveringMenu && !isHoveringLogo && !isClickOpen) {
-                closeMenu();
-            }
-        }, 30);
-    }
-
-    if (window.innerWidth >= 769) {
-        trigger.addEventListener('mouseenter', () => { isHoveringTrigger = true; openMenu(); });
-        trigger.addEventListener('mouseleave', () => { isHoveringTrigger = false; checkMenuStatus(); });
-        menu.addEventListener('mouseenter', () => { isHoveringMenu = true; });
-        menu.addEventListener('mouseleave', () => { isHoveringMenu = false; checkMenuStatus(); });
-        if (logo) {
-            logo.addEventListener('mouseenter', () => { isHoveringLogo = true; if (menu.classList.contains('show')) openMenu(); });
-            logo.addEventListener('mouseleave', () => { isHoveringLogo = false; checkMenuStatus(); });
-        }
-    }
-
-    trigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (menu.classList.contains('show')) { closeMenu(); } else { isClickOpen = true; openMenu(); }
-    });
-
-    window.addEventListener('scroll', () => { if (menu.classList.contains('show')) closeMenu(); }, { passive: true });
-
-    document.addEventListener('click', (e) => {
-        if (menu.classList.contains('show') && !menu.contains(e.target) && !trigger.contains(e.target)) { closeMenu(); }
-    });
-
-    function openWeChatCard() {
-        closeMenu(); 
-        if (modal) {
-            modal.classList.add('active'); 
-            trigger.classList.add('active');
-            if(logo) logo.classList.add('active');
-        }
-    }
-
-    function handleModalClose() {
-        if (modal) {
-            modal.classList.remove('active');
-            trigger.classList.remove('active');
-            if(logo) logo.classList.remove('active');
-        }
-    }
-
-    if (modal) {
-        modal.addEventListener('click', (e) => { if (e.target === modal) handleModalClose(); });
-    }
-
     // ========================================================
     // 🦨 柔顺下坠·超高密度真貂皮毛绒模拟引擎 (Realistic Mink Fur Simulation)
     // ========================================================
@@ -522,7 +221,7 @@ title: 不许礼貌
     const consoleMain = document.getElementById('consoleMain');
 
     let furStrands = [];
-    const MAX_STRANDS = 6000;
+    const MAX_STRANDS = 6000; // 超高密度带来厚重的皮草包裹感
     let animationFrameId = null;
     let timeBias = 0;
 
@@ -533,26 +232,35 @@ title: 不许礼貌
 
         furStrands = [];
 
+        // 在掌机核心壳体及边缘种下大衣毛囊
         for (let i = 0; i < MAX_STRANDS; i++) {
+            // 分布在画布中间偏壳体的区域
             const rx = 45 + Math.random() * rect.width;
             const ry = 45 + Math.random() * rect.height;
 
             const centerX = furCanvas.width / 2;
             const centerY = furCanvas.height / 2;
             
+            // 相对中心的向外发散系数
             const dirX = (rx - centerX) / centerX;
+
+            // 貂皮长毛绒核心规格：厚重、长至 30~55 像素的下坠长毛
             const length = 32 + Math.random() * 23;
             
+            // 设定基础色阶：吸光枪黑、深貂灰、以及极少量的亮银针毛高光
             const randColor = Math.random();
             let colorBase, highlightOpacity;
             
             if (randColor > 0.88) {
+                // 顶级貂皮的银色发光护毛针 (Silver guard hair)
                 colorBase = [128, 133, 155];
                 highlightOpacity = 0.16 + Math.random() * 0.16;
             } else if (randColor > 0.4) {
+                // 丰厚的深水貂灰主毛
                 colorBase = [24, 25, 31];
                 highlightOpacity = 0.75 + Math.random() * 0.15;
             } else {
+                // 底层绝对吸光收缩的纯黑色绒毛
                 colorBase = [6, 6, 8];
                 highlightOpacity = 0.85 + Math.random() * 0.15;
             }
@@ -564,40 +272,48 @@ title: 不许礼貌
                 dirX: dirX,
                 colorBase: colorBase,
                 opacity: highlightOpacity,
+                // 每根毛发拥有微小的物理刚度差异，让下垂形态错落有致
                 stiffness: 0.3 + Math.random() * 0.7,
                 wavePhase: Math.random() * Math.PI * 2
             });
         }
     }
 
+    // 每一帧动态绘制毛绒流场，赋予毛绒“呼吸光泽”和“丝滑摆动”，消除坚硬塑料感
     function renderMinkFur() {
         fctx.clearRect(0, 0, furCanvas.width, furCanvas.height);
-        timeBias += 0.008;
+        timeBias += 0.008; // 极其微弱柔和的空气波动速度
 
         const len = furStrands.length;
         for (let i = 0; i < len; i++) {
             const fur = furStrands[i];
 
+            // 物理流场公式：重力强力向下拖拽拉长 + 模拟微风在空中产生的极为丝滑柔顺的波浪式摆动
             const windInfluence = Math.sin(timeBias + fur.wavePhase) * 2.5 * (1 - fur.stiffness);
+            
+            // 目标终点：Y轴方向大幅度下垂叠加，X轴方向受边缘挤压自然外抛
             const targetX = fur.x + (fur.dirX * 12) + windInfluence;
-            const targetY = fur.y + fur.length + 8;
+            const targetY = fur.y + fur.length + 8; // 确保整体下垂感
 
+            // 两个控制点产生三阶贝塞尔曲线，赋予毛发毛茸茸的交织、顺滑下坠曲线，绝不僵硬
             const cp1X = fur.x + (fur.dirX * 4);
             const cp1Y = fur.y + (fur.length * 0.35);
             
             const cp2X = fur.x + (fur.dirX * 8) + windInfluence * 0.5;
             const cp2Y = fur.y + (fur.length * 0.7);
 
+            // 渐变色：从毛囊根部的深黑色，完美平滑过渡到梢部捕捉光线的金属质感色泽
             const gradient = fctx.createLinearGradient(fur.x, fur.y, targetX, targetY);
             gradient.addColorStop(0, `rgba(2, 2, 3, ${fur.opacity})`);
             gradient.addColorStop(0.4, `rgba(${fur.colorBase[0]}, ${fur.colorBase[1]}, ${fur.colorBase[2]}, ${fur.opacity})`);
+            // 毛尖闪烁真实的逆光细丝高光
             gradient.addColorStop(1, `rgba(${fur.colorBase[0] + 35}, ${fur.colorBase[1] + 38}, ${fur.colorBase[2] + 45}, ${fur.opacity * 0.9})`);
 
             fctx.beginPath();
             fctx.moveTo(fur.x, fur.y);
             fctx.bezierCurveTo(cp1X, cp1Y, cp2X, cp2Y, targetX, targetY);
             fctx.strokeStyle = gradient;
-            fctx.lineWidth = 0.6 + (1 - fur.stiffness) * 0.6;
+            fctx.lineWidth = 0.6 + (1 - fur.stiffness) * 0.6; // 梢部自然显细
             fctx.stroke();
         }
 
@@ -615,7 +331,7 @@ title: 不许礼貌
 
 
     // ==========================================
-    // 🎮 游戏液晶系统
+    // 🎮 游戏液晶系统（中古偏光偏冷色调）
     // ==========================================
     const canvas = document.getElementById('tetris');
     const ctx = canvas.getContext('2d');
