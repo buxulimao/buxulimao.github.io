@@ -27,6 +27,71 @@
             align-items: center;
             min-height: 100vh;
             overflow: hidden;
+            position: relative;
+        }
+
+        /* ------------------------------------ */
+        /* ✟ 顶部哥特菜单栏 (System Navbar) ✟ */
+        /* ------------------------------------ */
+        .top-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            padding: 0 40px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(6, 6, 8, 0.82);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid #14151a;
+            z-index: 100; /* 确保层级置顶，高于毛绒 Canvas (z-index: 2) 及屏幕 */
+        }
+
+        .nav-logo {
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: var(--metal-silver-highlight);
+            text-transform: uppercase;
+            text-shadow: 0 0 8px rgba(112, 117, 140, 0.3);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+        }
+
+        .nav-item {
+            color: #606475;
+            text-decoration: none;
+            font-size: 13px;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            color: #e0e4f0;
+            text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0%;
+            height: 1px;
+            background-color: var(--metal-silver-highlight);
+            transition: width 0.2s ease;
+        }
+
+        .nav-item:hover::after {
+            width: 100%;
         }
 
         /* 掌机核心主体 */
@@ -41,17 +106,18 @@
             box-shadow: 
                 0 50px 100px rgba(0, 0, 0, 0.99),
                 inset 0 0 40px rgba(0, 0, 0, 0.95);
+            margin-top: 20px; /* 适度给顶部菜单留出视视觉呼吸感 */
         }
 
-        /* 🦨 动态高密度奢华长毛绒下坠画布：溢出范围更大，允许长毛向下垂挂包裹边缘 */
+        /* 🦨 动态高密度奢华长毛绒下坠画布 */
         #furCanvas {
             position: absolute;
             top: -45px;
             left: -45px;
             width: calc(100% + 90px);
-            height: calc(100% + 120px); /* 底部大幅加长，给毛发下坠提供物理堆叠空间 */
+            height: calc(100% + 120px);
             pointer-events: none;
-            z-index: 2; /* 浮在机壳底色之上，但在硬件按键与屏幕下方 */
+            z-index: 2;
         }
 
         /* 铁铸屏幕外框 */
@@ -130,7 +196,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 使用 SVG 路径塑造真正不分割的实体哥特十字架，去除任何红点 */
         .key-btn .gothic-cross-svg {
             width: 100%;
             height: 100%;
@@ -138,7 +203,6 @@
             transition: transform 0.05s ease;
         }
 
-        /* 填充高对比度的银黑重铁质感与冷银高光边缘 */
         .key-btn .cross-path {
             fill: var(--gothic-solid-metal);
             stroke: var(--metal-silver-highlight);
@@ -146,21 +210,19 @@
             transition: all 0.05s ease;
         }
 
-        /* 浮雕内部装饰线阴影 */
         .key-btn .inner-decor {
             fill: #08090b;
             stroke: #1b1d24;
             stroke-width: 0.8px;
         }
 
-        /* 物理重击动作：整体下凹、银边高光收敛、暗部加深 */
         .key-btn:active .gothic-cross-svg, .key-btn.pseudo-active .gothic-cross-svg {
             transform: translateY(3px) scale(0.97);
         }
 
         .key-btn:active .cross-path, .key-btn.pseudo-active .cross-path {
             fill: #0b0c0e;
-            stroke: #484b59; /* 按下时金属边缘光变暗 */
+            stroke: #484b59;
         }
 
         .key-up { grid-column: 2; }
@@ -170,6 +232,16 @@
     </style>
 </head>
 <body>
+
+    <!-- ✟ 顶部菜单栏 ✟ -->
+    <header class="top-navbar">
+        <div class="nav-logo">SYSTEM_MENU</div>
+        <nav class="nav-links">
+            <a href="#about" class="nav-item">ABOUT</a>
+            <a href="#gallery" class="nav-item">GALLERY</a>
+            <a href="#contact" class="nav-item">CONTACT</a>
+        </nav>
+    </header>
 
     <div class="console-wrapper" id="consoleMain">
         <!-- 🔬 高精貂皮长毛绒柔顺动力学画布 -->
@@ -221,7 +293,7 @@
     const consoleMain = document.getElementById('consoleMain');
 
     let furStrands = [];
-    const MAX_STRANDS = 6000; // 超高密度带来厚重的皮草包裹感
+    const MAX_STRANDS = 6000;
     let animationFrameId = null;
     let timeBias = 0;
 
@@ -232,35 +304,26 @@
 
         furStrands = [];
 
-        // 在掌机核心壳体及边缘种下大衣毛囊
         for (let i = 0; i < MAX_STRANDS; i++) {
-            // 分布在画布中间偏壳体的区域
             const rx = 45 + Math.random() * rect.width;
             const ry = 45 + Math.random() * rect.height;
 
             const centerX = furCanvas.width / 2;
             const centerY = furCanvas.height / 2;
             
-            // 相对中心的向外发散系数
             const dirX = (rx - centerX) / centerX;
-
-            // 貂皮长毛绒核心规格：厚重、长至 30~55 像素的下坠长毛
             const length = 32 + Math.random() * 23;
             
-            // 设定基础色阶：吸光枪黑、深貂灰、以及极少量的亮银针毛高光
             const randColor = Math.random();
             let colorBase, highlightOpacity;
             
             if (randColor > 0.88) {
-                // 顶级貂皮的银色发光护毛针 (Silver guard hair)
                 colorBase = [128, 133, 155];
                 highlightOpacity = 0.16 + Math.random() * 0.16;
             } else if (randColor > 0.4) {
-                // 丰厚的深水貂灰主毛
                 colorBase = [24, 25, 31];
                 highlightOpacity = 0.75 + Math.random() * 0.15;
             } else {
-                // 底层绝对吸光收缩的纯黑色绒毛
                 colorBase = [6, 6, 8];
                 highlightOpacity = 0.85 + Math.random() * 0.15;
             }
@@ -272,48 +335,40 @@
                 dirX: dirX,
                 colorBase: colorBase,
                 opacity: highlightOpacity,
-                // 每根毛发拥有微小的物理刚度差异，让下垂形态错落有致
                 stiffness: 0.3 + Math.random() * 0.7,
                 wavePhase: Math.random() * Math.PI * 2
             });
         }
     }
 
-    // 每一帧动态绘制毛绒流场，赋予毛绒“呼吸光泽”和“丝滑摆动”，消除坚硬塑料感
     function renderMinkFur() {
         fctx.clearRect(0, 0, furCanvas.width, furCanvas.height);
-        timeBias += 0.008; // 极其微弱柔和的空气波动速度
+        timeBias += 0.008;
 
         const len = furStrands.length;
         for (let i = 0; i < len; i++) {
             const fur = furStrands[i];
 
-            // 物理流场公式：重力强力向下拖拽拉长 + 模拟微风在空中产生的极为丝滑柔顺的波浪式摆动
             const windInfluence = Math.sin(timeBias + fur.wavePhase) * 2.5 * (1 - fur.stiffness);
-            
-            // 目标终点：Y轴方向大幅度下垂叠加，X轴方向受边缘挤压自然外抛
             const targetX = fur.x + (fur.dirX * 12) + windInfluence;
-            const targetY = fur.y + fur.length + 8; // 确保整体下垂感
+            const targetY = fur.y + fur.length + 8;
 
-            // 两个控制点产生三阶贝塞尔曲线，赋予毛发毛茸茸的交织、顺滑下坠曲线，绝不僵硬
             const cp1X = fur.x + (fur.dirX * 4);
             const cp1Y = fur.y + (fur.length * 0.35);
             
             const cp2X = fur.x + (fur.dirX * 8) + windInfluence * 0.5;
             const cp2Y = fur.y + (fur.length * 0.7);
 
-            // 渐变色：从毛囊根部的深黑色，完美平滑过渡到梢部捕捉光线的金属质感色泽
             const gradient = fctx.createLinearGradient(fur.x, fur.y, targetX, targetY);
             gradient.addColorStop(0, `rgba(2, 2, 3, ${fur.opacity})`);
             gradient.addColorStop(0.4, `rgba(${fur.colorBase[0]}, ${fur.colorBase[1]}, ${fur.colorBase[2]}, ${fur.opacity})`);
-            // 毛尖闪烁真实的逆光细丝高光
             gradient.addColorStop(1, `rgba(${fur.colorBase[0] + 35}, ${fur.colorBase[1] + 38}, ${fur.colorBase[2] + 45}, ${fur.opacity * 0.9})`);
 
             fctx.beginPath();
             fctx.moveTo(fur.x, fur.y);
             fctx.bezierCurveTo(cp1X, cp1Y, cp2X, cp2Y, targetX, targetY);
             fctx.strokeStyle = gradient;
-            fctx.lineWidth = 0.6 + (1 - fur.stiffness) * 0.6; // 梢部自然显细
+            fctx.lineWidth = 0.6 + (1 - fur.stiffness) * 0.6;
             fctx.stroke();
         }
 
@@ -328,7 +383,6 @@
 
     setTimeout(startFurEngine, 80);
     window.addEventListener('resize', () => setTimeout(startFurEngine, 150));
-
 
     // ==========================================
     // 🎮 游戏液晶系统（中古偏光偏冷色调）
@@ -369,7 +423,7 @@
 
     const perfectSequence = [
         { matrix: [[1, 1], [1, 1]], x: 0 }, { matrix: [[1, 1], [1, 1]], x: 2 }, { matrix: [[1, 1], [1, 1]], x: 4 }, 
-        { matrix: [[1, 1, 1]], x: 0 }, { matrix: [[1, 1, 1]], x: 3 },       
+        { matrix: [[1, 1, 1]], x: 0 }, { matrix: [[1, 1, 1]], x: 3 },        
         { matrix: [[1, 1], [1, 1]], x: 0 }, { matrix: [[1, 1], [1, 1]], x: 2 }, { matrix: [[1, 1]], x: 4 }, { matrix: [[1, 1]], x: 4 },          
         { matrix: [[1, 1, 1, 1, 1, 1]], x: 0 } 
     ];
@@ -531,6 +585,10 @@
     });
 
     window.addEventListener('keydown', event => {
+        // 防止在导航或其他非控制焦点时误触按键滑动
+        if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(event.code) > -1) {
+            event.preventDefault();
+        }
         if (isFinished) return;
         const keyMap = { 'ArrowLeft': 'left', 'a': 'left', 'ArrowRight': 'right', 'd': 'right', 'ArrowDown': 'down', 's': 'down', 'ArrowUp': 'up', 'w': 'up' };
         const action = keyMap[event.key];
