@@ -1,60 +1,279 @@
 ---
 layout: default
-title:不许礼貌
+title: 不许礼貌
 ---
 
+<!-- 🌟 全局浏览器小图标 -->
+<link rel="icon" href="{{ '/images/tougu.png' | relative_url }}" type="image/png">
+
+<!-- ✟ 顶部导航栏 HTML ✟ -->
+<header id="header">
+    <img class="logo-btn" 
+         src="{{ '/images/logo.png' | relative_url }}" 
+         alt="LOGO" 
+         id="headerLogoBtn"
+         onclick="window.location.href='{{ '/' | relative_url }}'">
+
+    <div class="menu-trigger" id="menuTrigger">
+        <div class="menu-trigger-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <nav id="dropdown-menu">
+        <div class="menu-links">
+            <span class="menu-item" onclick="window.location.href='https://andseethingsasido.github.io/and666/'">商店</span>
+            <span class="menu-item" onclick="openWeChatCard()">公众号</span>
+        </div>
+    </nav>
+</header>
+
+<!-- 独立弹窗组件：公众号遮罩层 -->
+<div class="modal-overlay" id="qrcodeModal">
+    <div class="modal-content">
+        <div class="modal-title">Contact</div>
+        <img src="{{ '/images/gozhonghao.jpg' | relative_url }}" alt="gozhonghao" class="qrcode-img" id="modalQrcodeImg">
+    </div>
+</div>
+
+<!-- 样式层 (CSS) -->
 <style>
-html, body {
-    margin: 0;
-    padding: 0;
-    background: #000;
-    color: #fff;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    overflow-y: auto;
-    scroll-behavior: smooth;
-    box-sizing: border-box;
-}
-img { user-select: none; -webkit-user-drag: none; }
+    @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
 
-#gifTop { width: 80%; max-width: 900px; border-radius: 6px; box-shadow: 0 0 20px rgba(255,255,255,.12); margin: 12px 0; }
-#gifBottom { max-width: 80%; max-height: 45vh; border-radius: 6px; box-shadow: 0 0 20px rgba(255,255,255,.12); margin: 12px 0; cursor: pointer; }
+    /* 页面基础全局样式 */
+    html, body {
+        margin: 0;
+        padding: 0;
+        background: #000;
+        color: #fff;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        overflow-y: auto;
+        scroll-behavior: smooth;
+        box-sizing: border-box;
+    }
 
-/* PC 端图片比例微调 */
-@media (min-width: 769px) {
-    #gifTop { width: 53%; max-width: 600px; }
-}
+    /* 顶部防遮挡内边距 */
+    @media (max-width: 768px) {
+        body { padding-top: 55px !important; }
+    }
+    @media (min-width: 769px) {
+        body { padding-top: 80px !important; }
+    }
 
-/* A-F 矩阵 */
-.brand-section {
-    width: 80%;
-    max-width: 900px;
-    margin: 20px 0 40px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); 
-    gap: 15px; 
-}
-.brand-tag {
-    font-size: 16px;
-    font-weight: 300;
-    letter-spacing: 2px;
-    color: #555;
-    text-transform: uppercase;
-    text-align: center;
-    padding: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.02);
-    transition: color 0.5s, border-color 0.5s, background 0.5s;
-}
-.brand-tag:hover {
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.03);
-}
+    img { user-select: none; -webkit-user-drag: none; }
+
+    /* -------------------------- */
+    /* ✟ 顶部 Menu 修正样式 ✟ */
+    /* -------------------------- */
+    #header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: transparent;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000010 !important;
+        box-sizing: border-box;
+        padding: 0 40px;
+        pointer-events: none;
+    }
+
+    .logo-btn {
+        width: auto;
+        height: 30px; /* 显式给定默认高度，防止图片没载入时挤压成0 */
+        cursor: pointer;
+        position: relative;
+        z-index: 10003;
+        transition: transform 0.3s, filter 0.3s; 
+        pointer-events: auto;
+    }
+    .logo-btn:hover { transform: scale(1.02); }
+    .logo-btn.active { filter: invert(1) !important; }
+
+    .menu-trigger {
+        position: absolute;
+        right: 40px;
+        top: 0;
+        display: flex;
+        align-items: center;
+        z-index: 10002;
+        cursor: pointer;
+        pointer-events: auto;
+    }
+    
+    /* 显式定义图标容器与三条杠线段高度 */
+    .menu-trigger-icon { 
+        display: flex; 
+        flex-direction: column; 
+        justify-content: space-between;
+        width: 24px;
+        height: 16px; /* 补全图标高 */
+    }
+    .menu-trigger-icon span { 
+        display: block; 
+        width: 100%; 
+        height: 2px; /* 修复点：强制指定线段厚度，确保线条能够显示 */
+        background: #fff; 
+        transition: background 0.3s, transform 0.3s; 
+    }
+    
+    .menu-trigger.active .menu-trigger-icon span { background: #000; }
+
+    #dropdown-menu {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        transform: translateY(-100%); 
+        background: #fff; 
+        transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        box-sizing: border-box;
+        z-index: 10001;
+        display: flex;
+        justify-content: flex-end; 
+        pointer-events: auto;
+    }
+    #dropdown-menu.show { transform: translateY(0); }
+
+    .menu-links { 
+        display: flex; 
+        flex-direction: column; 
+        align-items: flex-end;
+        text-align: right;
+        gap: 24px; 
+    }
+    
+    .menu-item {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 20px; 
+        font-weight: 700; 
+        letter-spacing: 0.15em; 
+        color: #000; 
+        cursor: pointer;
+        transition: opacity 0.25s ease;
+        white-space: nowrap;
+    }
+    .menu-item:hover { opacity: 0.6; }
+
+    /* 弹窗遮罩样式 */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.96); 
+        backdrop-filter: blur(4px); 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 999999 !important;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .modal-content {
+        background-color: #ffffff; 
+        border: 1px solid #000000; 
+        padding: 35px; 
+        text-align: center;
+        max-width: 320px;
+        width: 90%;
+        position: relative;
+        transform: scale(0.96); 
+        transition: transform 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-sizing: border-box;
+    }
+
+    .modal-overlay.active .modal-content { transform: scale(1); }
+
+    .modal-title {
+        font-family: 'UnifrakturMaguntia', cursive;
+        font-size: 26px;
+        margin-bottom: 25px;
+        color: #000000;
+    }
+
+    .qrcode-img {
+        width: 160px; 
+        height: 160px;
+        object-fit: contain;
+        display: block;
+    }
+
+    @media (max-width: 768px) {
+        #header { height: 40px; padding: 0 20px; }
+        .logo-btn { height: 20px; } 
+        .menu-trigger { height: 40px; right: 20px; }
+        .menu-trigger-icon { width: 18px; height: 12px; }
+        .menu-trigger-icon span { height: 1.5px; }
+        #dropdown-menu { padding: 70px 20px 40px; }
+    }
+    @media (min-width: 769px) {
+        #header { height: 55px; }
+        .logo-btn { height: 35px; } 
+        .menu-trigger { height: 55px; }
+        .menu-trigger-icon { width: 24px; height: 14px; } 
+        .menu-trigger-icon span { height: 2px; }
+        #dropdown-menu { padding: 90px 40px 45px; }
+    }
+
+    /* -------------------------- */
+    /* 主页内容样式 */
+    /* -------------------------- */
+    #gifTop { width: 80%; max-width: 900px; border-radius: 6px; box-shadow: 0 0 20px rgba(255,255,255,.12); margin: 12px 0; }
+    #gifBottom { max-width: 80%; max-height: 45vh; border-radius: 6px; box-shadow: 0 0 20px rgba(255,255,255,.12); margin: 12px 0; cursor: pointer; }
+
+    @media (min-width: 769px) {
+        #gifTop { width: 53%; max-width: 600px; }
+    }
+
+    .brand-section {
+        width: 80%;
+        max-width: 900px;
+        margin: 20px 0 40px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 15px; 
+    }
+    .brand-tag {
+        font-size: 16px;
+        font-weight: 300;
+        letter-spacing: 2px;
+        color: #555;
+        text-transform: uppercase;
+        text-align: center;
+        padding: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.02);
+        transition: color 0.5s, border-color 0.5s, background 0.5s;
+    }
+    .brand-tag:hover {
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.03);
+    }
 </style>
 
+<!-- 主页面内容 HTML -->
 <img id="gifTop" src="{{ '/logo1.png' | relative_url }}">
 <img id="gifBottom" src="{{ '/logo2.png' | relative_url }}">
 
@@ -67,7 +286,88 @@ img { user-select: none; -webkit-user-drag: none; }
     <div class="brand-tag">F</div>
 </div>
 
+<!-- 脚本层 (JavaScript) -->
 <script>
-// 点击底部 GIF 跳转
-document.getElementById('gifBottom').onclick = () => location.href = "https://andseethingsasido.github.io/and666/";
+    // 菜单控制逻辑
+    const trigger = document.getElementById('menuTrigger');
+    const menu = document.getElementById('dropdown-menu');
+    const logo = document.getElementById('headerLogoBtn');
+    const modal = document.getElementById('qrcodeModal');
+
+    let isHoveringTrigger = false;
+    let isHoveringMenu = false;
+    let isHoveringLogo = false;
+    let isClickOpen = false;
+
+    function openMenu() {
+        menu.classList.add('show');
+        trigger.classList.add('active');
+        if(logo) logo.classList.add('active');
+    }
+
+    function closeMenu() {
+        menu.classList.remove('show');
+        isClickOpen = false;
+        if (modal && !modal.classList.contains('active')) {
+            trigger.classList.remove('active');
+            if(logo) logo.classList.remove('active');
+        }
+    }
+
+    function checkMenuStatus() {
+        setTimeout(() => {
+            if (!isHoveringTrigger && !isHoveringMenu && !isHoveringLogo && !isClickOpen) {
+                closeMenu();
+            }
+        }, 30);
+    }
+
+    if (window.innerWidth >= 769) {
+        trigger.addEventListener('mouseenter', () => { isHoveringTrigger = true; openMenu(); });
+        trigger.addEventListener('mouseleave', () => { isHoveringTrigger = false; checkMenuStatus(); });
+        menu.addEventListener('mouseenter', () => { isHoveringMenu = true; });
+        menu.addEventListener('mouseleave', () => { isHoveringMenu = false; checkMenuStatus(); });
+        if (logo) {
+            logo.addEventListener('mouseenter', () => { isHoveringLogo = true; if (menu.classList.contains('show')) openMenu(); });
+            logo.addEventListener('mouseleave', () => { isHoveringLogo = false; checkMenuStatus(); });
+        }
+    }
+
+    trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (menu.classList.contains('show')) { closeMenu(); } else { isClickOpen = true; openMenu(); }
+    });
+
+    window.addEventListener('scroll', () => { if (menu.classList.contains('show')) closeMenu(); }, { passive: true });
+
+    document.addEventListener('click', (e) => {
+        if (menu.classList.contains('show') && !menu.contains(e.target) && !trigger.contains(e.target)) { closeMenu(); }
+    });
+
+    function openWeChatCard() {
+        closeMenu(); 
+        if (modal) {
+            modal.classList.add('active'); 
+            trigger.classList.add('active');
+            if(logo) logo.classList.add('active');
+        }
+    }
+
+    function handleModalClose() {
+        if (modal) {
+            modal.classList.remove('active');
+            trigger.classList.remove('active');
+            if(logo) logo.classList.remove('active');
+        }
+    }
+
+    if (modal) {
+        modal.addEventListener('click', (e) => { if (e.target === modal) handleModalClose(); });
+    }
+
+    // 图片点击跳转逻辑
+    const gifBottom = document.getElementById('gifBottom');
+    if (gifBottom) {
+        gifBottom.onclick = () => location.href = "https://andseethingsasido.github.io/and666/";
+    }
 </script>
