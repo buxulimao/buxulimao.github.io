@@ -13,7 +13,7 @@
          id="headerLogoBtn"
          onclick="window.location.href='{{ '/' | relative_url }}'">
 
-    <div class="menu-trigger" id="menuTrigger">
+    <div class="menu-trigger" id="menuTrigger" aria-label="Toggle Navigation">
         <div class="menu-trigger-icon">
             <span></span>
             <span></span>
@@ -72,7 +72,7 @@
         transition: transform 0.3s, filter 0.3s; 
         pointer-events: auto;
     }
-    .logo-btn:hover { transform: scale(1.02); }
+    .logo-btn:hover { transform: scale(1.05); }
     .logo-btn.active { filter: invert(1) !important; }
 
     .menu-trigger {
@@ -106,13 +106,14 @@
         left: 0;
         width: 100%;
         transform: translateY(-100%); 
-        background: #fff; 
+        background: #ffffff; 
         transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         box-sizing: border-box;
         z-index: 10001;
         display: flex;
         justify-content: flex-end; 
         pointer-events: auto;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
     #dropdown-menu.show { transform: translateY(0); }
 
@@ -129,23 +130,26 @@
         font-size: 20px; 
         font-weight: 700; 
         letter-spacing: 0.15em; 
-        color: #000; 
+        color: #000000; 
         cursor: pointer;
-        transition: opacity 0.25s ease;
+        transition: opacity 0.25s ease, transform 0.25s ease;
         white-space: nowrap;
         margin-right: -0.15em; 
     }
-    .menu-item:hover { opacity: 0.6; }
+    .menu-item:hover { 
+        opacity: 0.6; 
+        transform: translateX(-5px);
+    }
 
-    /* 弹窗样式 */
+    /* 独立弹窗组件：公众号遮罩层 */
     .modal-overlay {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(255, 255, 255, 0.96); 
-        backdrop-filter: blur(4px); 
+        background-color: rgba(0, 0, 0, 0.85); 
+        backdrop-filter: blur(8px); 
         display: flex;
         justify-content: center;
         align-items: center;
@@ -177,15 +181,17 @@
         justify-content: center;
         align-items: center;
         box-sizing: border-box;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.8);
     }
 
     .modal-overlay.active .modal-content { transform: scale(1); }
 
     .modal-title {
         font-family: 'UnifrakturMaguntia', cursive;
-        font-size: 26px;
+        font-size: 28px;
         margin-bottom: 25px;
         color: #000000;
+        letter-spacing: 0.05em;
     }
 
     .qrcode-img {
@@ -228,16 +234,16 @@
     let isClickOpen = false;
 
     function openMenu() {
-        menu.classList.add('show');
-        trigger.classList.add('active');
+        if(menu) menu.classList.add('show');
+        if(trigger) trigger.classList.add('active');
         if(logo) logo.classList.add('active');
     }
 
     function closeMenu() {
-        menu.classList.remove('show');
+        if(menu) menu.classList.remove('show');
         isClickOpen = false;
         if (modal && !modal.classList.contains('active')) {
-            trigger.classList.remove('active');
+            if(trigger) trigger.classList.remove('active');
             if(logo) logo.classList.remove('active');
         }
     }
@@ -251,32 +257,38 @@
     }
 
     if (window.innerWidth >= 769) {
-        trigger.addEventListener('mouseenter', () => { isHoveringTrigger = true; openMenu(); });
-        trigger.addEventListener('mouseleave', () => { isHoveringTrigger = false; checkMenuStatus(); });
-        menu.addEventListener('mouseenter', () => { isHoveringMenu = true; });
-        menu.addEventListener('mouseleave', () => { isHoveringMenu = false; checkMenuStatus(); });
+        if (trigger) {
+            trigger.addEventListener('mouseenter', () => { isHoveringTrigger = true; openMenu(); });
+            trigger.addEventListener('mouseleave', () => { isHoveringTrigger = false; checkMenuStatus(); });
+        }
+        if (menu) {
+            menu.addEventListener('mouseenter', () => { isHoveringMenu = true; });
+            menu.addEventListener('mouseleave', () => { isHoveringMenu = false; checkMenuStatus(); });
+        }
         if (logo) {
-            logo.addEventListener('mouseenter', () => { isHoveringLogo = true; if (menu.classList.contains('show')) openMenu(); });
+            logo.addEventListener('mouseenter', () => { isHoveringLogo = true; if (menu && menu.classList.contains('show')) openMenu(); });
             logo.addEventListener('mouseleave', () => { isHoveringLogo = false; checkMenuStatus(); });
         }
     }
 
-    trigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (menu.classList.contains('show')) { closeMenu(); } else { isClickOpen = true; openMenu(); }
-    });
+    if (trigger) {
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (menu && menu.classList.contains('show')) { closeMenu(); } else { isClickOpen = true; openMenu(); }
+        });
+    }
 
-    window.addEventListener('scroll', () => { if (menu.classList.contains('show')) closeMenu(); }, { passive: true });
+    window.addEventListener('scroll', () => { if (menu && menu.classList.contains('show')) closeMenu(); }, { passive: true });
 
     document.addEventListener('click', (e) => {
-        if (menu.classList.contains('show') && !menu.contains(e.target) && !trigger.contains(e.target)) { closeMenu(); }
+        if (menu && menu.classList.contains('show') && !menu.contains(e.target) && !trigger.contains(e.target)) { closeMenu(); }
     });
 
     function openWeChatCard() {
         closeMenu(); 
         if (modal) {
             modal.classList.add('active'); 
-            trigger.classList.add('active');
+            if(trigger) trigger.classList.add('active');
             if(logo) logo.classList.add('active');
         }
     }
@@ -284,7 +296,7 @@
     function handleModalClose() {
         if (modal) {
             modal.classList.remove('active');
-            trigger.classList.remove('active');
+            if(trigger) trigger.classList.remove('active');
             if(logo) logo.classList.remove('active');
         }
     }
@@ -292,4 +304,12 @@
     if (modal) {
         modal.addEventListener('click', (e) => { if (e.target === modal) handleModalClose(); });
     }
+
+    // 支持键盘 Esc 或掌机 B 键快捷关闭弹窗
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            handleModalClose();
+            closeMenu();
+        }
+    });
 </script>
