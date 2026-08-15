@@ -25,10 +25,11 @@
             height: 100%;
             margin: 0;
             padding: 0;
-            background-color: #010102; 
+            /* 将 PC 页面全局背景色调整为与掌机一致的貂皮黑，彻底消除 PC 端底部黑边 */
+            background-color: var(--mink-black); 
             color: #ffffff;
             font-family: 'Courier New', Courier, monospace;
-            overflow: hidden; /* 彻底禁止移动端滑动偏移 */
+            overflow: hidden; /* 彻底禁止滑动偏移 */
             position: fixed;
             top: 0;
             left: 0;
@@ -41,13 +42,14 @@
             align-items: center;
         }
 
-        /* ---------------- 顶部悬浮 LOGO（最顶格并向右偏移8px） ---------------- */
+        /* ---------------- 顶部悬浮 LOGO（顶部完全贴边去除留白，向右偏移13px） ---------------- */
         .top-bar {
             position: fixed;
-            top: 0; /* 直接置顶，不留距离 */
+            top: 0; /* 置顶 */
             left: 50%;
             transform: translateX(-50%);
-            margin-left: 8px; /* 原3px改为了8px */
+            margin-left: 13px; /* 向右移动 13px */
+            margin-top: -15px; /* 向上微调负边距，消除图片透明边框带来的顶部留白 */
             z-index: 100;
             background: transparent;
             pointer-events: auto;
@@ -56,7 +58,7 @@
         .logo-btn {
             height: 152px;
             cursor: pointer;
-            display: block;
+            display: block; /* 消除 inline 图片底部的微小空隙 */
             transition: transform 0.25s ease, opacity 0.2s;
         }
 
@@ -72,19 +74,19 @@
             left: 0;
             width: 100%;
             height: 0;
-            background-color: #010102;
+            background-color: var(--mink-black);
             overflow: hidden;
             transition: height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 90;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center; /* 移除二维码后将按钮居中展示 */
+            justify-content: center;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.95);
         }
 
         .drawer-menu.open {
-            height: 280px; /* 适当缩减抽屉高度，使居中美观 */
+            height: 280px;
         }
 
         .menu-content {
@@ -140,12 +142,15 @@
             touch-action: none;
         }
 
-        /* 移动端全宽贴边处理 */
+        /* 移动端全宽贴边处理（彻底移除底部黑边） */
         @media (max-width: 600px) {
             .console-wrapper {
                 width: 100vw;
+                height: 100vh; /* 使掌机机身填满整个高度 */
                 border-radius: 0;
-                padding: 30px 10px;
+                padding: 20px 10px;
+                padding-bottom: calc(20px + env(safe-area-inset-bottom)); /* 适配 iPhone 底部全面屏安全区 */
+                justify-content: space-evenly; /* 内部元素垂直平分分布，防止溢出或挤压 */
             }
         }
 
@@ -172,7 +177,7 @@
             box-shadow: 
                 inset 6px 8px 20px rgba(0,0,0,0.98),
                 0 6px 16px rgba(0, 0, 0, 0.9);
-            margin-bottom: 35px;
+            margin-bottom: 25px;
             position: relative;
             border: 2px solid #181920;
             z-index: 4; 
@@ -180,6 +185,12 @@
             justify-content: center;
             align-items: center;
             width: fit-content;
+        }
+
+        @media (max-width: 600px) {
+            .screen-frame {
+                margin-bottom: 0; /* 移动端靠 justify-content 均分，避免固定 margin 撑高 */
+            }
         }
 
         .screen-container {
@@ -294,7 +305,7 @@
              id="menuToggleBtn">
     </div>
 
-    <!-- 菜单抽屉（移除了二维码区域） -->
+    <!-- 菜单抽屉 -->
     <div class="drawer-menu" id="drawerMenu">
         <div class="menu-content">
             <a href="https://buxulimao.github.io/shop/" class="shop-btn">进入商店</a>
@@ -361,12 +372,10 @@
         document.body.classList.toggle('menu-open', isOpen);
         
         if (isOpen) {
-            // 下滑展开 0.5 秒 (500ms) 后自动跳转
             autoRedirectTimer = setTimeout(() => {
                 window.location.href = "https://buxulimao.github.io/shop/";
             }, 500);
         } else {
-            // 如果用户中途关闭了菜单，清除定时跳转
             if (autoRedirectTimer) clearTimeout(autoRedirectTimer);
         }
         
