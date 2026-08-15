@@ -22,7 +22,7 @@
             overflow-x: hidden;
         }
 
-        /* 顶部固定导航栏与 Logo 按钮 */
+        /* 顶部固定导航栏 */
         .top-bar {
             position: fixed;
             top: 0;
@@ -35,6 +35,7 @@
             z-index: 100;
             background: rgba(6, 6, 8, 0.85);
             backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .logo-btn {
@@ -67,7 +68,6 @@
             border-bottom: 1px solid #181920;
         }
 
-        /* 抽屉内部元素 */
         .menu-content {
             display: flex;
             flex-direction: column;
@@ -105,7 +105,7 @@
             color: #060608;
         }
 
-        /* 公众号二维码结构 */
+        /* 公众号二维码 */
         .qr-container {
             display: flex;
             flex-direction: column;
@@ -119,6 +119,7 @@
             border-radius: 8px;
             border: 1px solid #181920;
             object-fit: cover;
+            background-color: #1a1a24;
         }
 
         .qr-label {
@@ -132,17 +133,21 @@
             position: relative;
             margin-top: 60px;
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         body.menu-open .console-wrapper {
             transform: translateY(320px);
         }
 
-        /* 掌机基础样式 */
+        /* 掌机外壳 */
         .console-container {
             position: relative;
             width: 800px;
             max-width: 95vw;
+            min-height: 400px;
         }
 
         .console-bg {
@@ -153,7 +158,7 @@
             pointer-events: none;
         }
 
-        /* 屏幕 Canvas 容器 */
+        /* 游戏机屏幕区域 (相对应外壳绝对定位) */
         .screen-area {
             position: absolute;
             top: 18%;
@@ -163,6 +168,7 @@
             background-color: #000;
             border-radius: 8px;
             overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
         }
 
         canvas {
@@ -176,7 +182,11 @@
 
     <!-- 1. 顶部固定导航栏 -->
     <div class="top-bar">
-        <img src="logo(2).png" alt="Menu Logo" class="logo-btn" id="menuToggleBtn">
+        <img src="logo(2).png" 
+             onerror="this.onerror=null; this.src='https://via.placeholder.com/120x36/101114/ffffff?text=LOGO';" 
+             alt="Menu Logo" 
+             class="logo-btn" 
+             id="menuToggleBtn">
     </div>
 
     <!-- 2. 下拉展开菜单 -->
@@ -184,7 +194,10 @@
         <div class="menu-content">
             <a href="https://buxulimao.github.io/shop/" target="_blank" class="shop-btn">商店</a>
             <div class="qr-container">
-                <img src="gozhonghao.jpg" alt="公众号二维码" class="qr-img">
+                <img src="gozhonghao.jpg" 
+                     onerror="this.onerror=null; this.src='https://via.placeholder.com/140x140/1a1a24/ffffff?text=QR+Code';" 
+                     alt="公众号二维码" 
+                     class="qr-img">
                 <span class="qr-label">微信公众号</span>
             </div>
         </div>
@@ -193,7 +206,10 @@
     <!-- 3. 主页面掌机容器 -->
     <div class="console-wrapper">
         <div class="console-container">
-            <img src="gamebody.png" alt="Console Body" class="console-bg">
+            <img src="gamebody.png" 
+                 onerror="this.onerror=null; this.src='https://via.placeholder.com/800x450/111218/ffffff?text=Game+Console';" 
+                 alt="Console Body" 
+                 class="console-bg">
             <div class="screen-area">
                 <canvas id="furCanvas"></canvas>
             </div>
@@ -210,35 +226,85 @@
             const isOpen = drawerMenu.classList.toggle('open');
             document.body.classList.toggle('menu-open', isOpen);
             
-            // 动画完成后重新计算 Canvas 尺寸
             setTimeout(() => {
                 window.dispatchEvent(new Event('resize'));
             }, 420);
         });
 
-        // --- 皮毛 Canvas 模拟引擎 ---
+        // --- 动态皮毛 Canvas 仿真交互 ---
         const canvas = document.getElementById('furCanvas');
         const ctx = canvas.getContext('2d');
 
-        function resizeCanvas() {
-            canvas.width = canvas.clientWidth;
-            canvas.height = canvas.clientHeight;
+        let width, height;
+        let hairs = [];
+        const mouse = { x: -1000, y: -1000, radius: 60 };
+
+        function initCanvas() {
+            width = canvas.width = canvas.clientWidth;
+            height = canvas.height = canvas.clientHeight;
+            
+            hairs = [];
+            const spacing = 12;
+            for (let x = 10; x < width; x += spacing) {
+                for (let y = 10; y < height; y += spacing) {
+                    hairs.push({
+                        baseX: x,
+                        baseY: y,
+                        x: x,
+                        y: y,
+                        length: 8 + Math.random() * 6,
+                        angle: Math.PI / 2
+                    });
+                }
+            }
         }
 
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+        window.addEventListener('resize', initCanvas);
 
-        // 简易渲染循环示例（保留原有逻辑框架）
-        function render() {
-            ctx.fillStyle = '#050508';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // 可以在此处编写你的皮毛渲染逻辑...
-            
-            requestAnimationFrame(render);
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouse.x = e.clientX - rect.left;
+            mouse.y = e.clientY - rect.top;
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            mouse.x = -1000;
+            mouse.y = -1000;
+        });
+
+        function animate() {
+            ctx.fillStyle = '#06070a';
+            ctx.fillRect(0, 0, width, height);
+
+            for (let i = 0; i < hairs.length; i++) {
+                const h = hairs[i];
+                const dx = mouse.x - h.baseX;
+                const dy = mouse.y - h.baseY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                let targetAngle = Math.PI / 2;
+                if (dist < mouse.radius) {
+                    targetAngle = Math.atan2(dy, dx) + Math.PI;
+                }
+
+                h.angle += (targetAngle - h.angle) * 0.1;
+
+                const tipX = h.baseX + Math.cos(h.angle) * h.length;
+                const tipY = h.baseY + Math.sin(h.angle) * h.length;
+
+                ctx.beginPath();
+                ctx.moveTo(h.baseX, h.baseY);
+                ctx.lineTo(tipX, tipY);
+                ctx.strokeStyle = `rgba(180, 190, 210, ${0.4 + (dist < mouse.radius ? 0.4 : 0)})`;
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            }
+
+            requestAnimationFrame(animate);
         }
-        
-        render();
+
+        initCanvas();
+        animate();
     </script>
 </body>
 </html>
