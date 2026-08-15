@@ -1,720 +1,139 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>不许礼貌</title>
-    <style>
-        :root {
-            /* 奢华吸光貂皮基底 */
-            --mink-black: #060608;
-            --mink-shadow: #020203;
+  <meta charset="UTF-8">
+  <!-- 适配移动端视口 & 防止底部拉伸黑边 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>下载页面</title>
+  <style>
+    /* CSS 重置 & 消除移动端滚动与黑边 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-            /* 哥特一体化银黑金属 */
-            --gothic-solid-metal: #101114;
-            --metal-silver-highlight: #70758c;
-        }
+    html, body {
+      width: 100%;
+      height: 100%;
+      /* 使用 svh/dvh 动态适配移动端底部 Safe Area，防止出现黑边 */
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      background-color: #f5f5f7; /* 设置统一背景色，避免露底黑边 */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow-x: hidden;
+    }
 
-        * {
-            box-sizing: border-box;
-            -webkit-touch-callout: none;
-        }
+    /* 页面主体内容 */
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+      /* 适配 iPhone 底部安全区域 */
+      padding-bottom: env(safe-area-inset-bottom);
+    }
 
-        html, body {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            background-color: #010102; 
-            color: #ffffff;
-            font-family: 'Courier New', Courier, monospace;
-            overflow: hidden; /* 彻底禁止移动端滑动偏移 */
-            position: fixed;
-            top: 0;
-            left: 0;
-        }
+    /* 1. 顶部 Logo：向右移动 5px */
+    .header-logo {
+      transform: translateX(5px);
+      max-width: 120px;
+      height: auto;
+      display: block;
+    }
 
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+    /* 遮罩层 */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+      z-index: 99;
+    }
 
-        /* ---------------- 顶部悬浮 LOGO（最顶格并右移3px） ---------------- */
-        .top-bar {
-            position: fixed;
-            top: 0; /* 直接置顶，不留距离 */
-            left: 50%;
-            transform: translateX(-50%);
-            margin-left: 3px; /* 向右偏移 3px */
-            z-index: 100;
-            background: transparent;
-            pointer-events: auto;
-        }
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
 
-        .logo-btn {
-            height: 152px;
-            cursor: pointer;
-            display: block;
-            transition: transform 0.25s ease, opacity 0.2s;
-        }
+    /* 弹窗样式：初始位于顶部上方，通过 transition 实现 0.5s 滑下动画 */
+    .modal-download {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, -100%);
+      width: 88%;
+      max-width: 400px;
+      background: #ffffff;
+      border-radius: 0 0 16px 16px;
+      padding: 24px 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      z-index: 100;
+      /* 滑下动画时长控制为 0.5 秒 */
+      transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    }
 
-        .logo-btn:hover {
-            transform: scale(1.03);
-            opacity: 0.9;
-        }
+    /* 弹窗滑下激活状态 */
+    .modal-download.slide-down {
+      transform: translate(-50%, 0);
+    }
 
-        /* ---------------- 顶部下拉抽屉菜单（无底部留白） ---------------- */
-        .drawer-menu {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 0;
-            background-color: #010102;
-            overflow: hidden;
-            transition: height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 90;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end; /* 底部对齐 */
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.95);
-        }
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333333;
+      margin-bottom: 8px;
+    }
 
-        .drawer-menu.open {
-            height: 380px;
-        }
-
-        .menu-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            padding-top: 130px;
-            padding-bottom: 0; /* 底部彻底不留白 */
-            opacity: 0;
-            transition: opacity 0.35s ease 0.15s;
-            width: 100%;
-        }
-
-        .drawer-menu.open .menu-content {
-            opacity: 1;
-        }
-
-        .shop-btn {
-            display: inline-block;
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 16px;
-            font-weight: bold;
-            letter-spacing: 4px;
-            background: transparent;
-            border: none;
-            padding: 5px 10px;
-            transition: all 0.25s ease;
-            cursor: pointer;
-        }
-
-        .shop-btn:hover {
-            color: #70758c;
-            text-shadow: 0 0 10px rgba(112, 117, 140, 0.6);
-        }
-
-        .qr-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            margin-bottom: 0; /* 二维码区域最底下无留白 */
-        }
-
-        .qr-img {
-            width: 65px;
-            height: 65px;
-            border-radius: 4px 4px 0 0;
-            border: 1px solid #181920;
-            border-bottom: none;
-            object-fit: cover;
-            background-color: #0b0c0f;
-            display: block;
-        }
-
-        .qr-label {
-            font-size: 9px;
-            color: #70758c;
-            letter-spacing: 1px;
-            padding-bottom: 2px;
-        }
-
-        /* ---------------- 掌机主体（移动端无黑边） ---------------- */
-        .console-wrapper {
-            background-color: var(--mink-black);
-            padding: 40px 20px;
-            border-radius: 42px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 
-                0 50px 100px rgba(0, 0, 0, 0.99),
-                inset 0 0 40px rgba(0, 0, 0, 0.95);
-            margin: 0 auto;
-            width: fit-content;
-            transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-            touch-action: none;
-        }
-
-        /* 移动端全宽贴边处理（彻底移除左右黑边） */
-        @media (max-width: 600px) {
-            .console-wrapper {
-                width: 100vw;
-                border-radius: 0; /* 贴边直角去除两旁黑边间隙 */
-                padding: 30px 10px;
-            }
-        }
-
-        body.menu-open .console-wrapper {
-            transform: translateY(320px);
-        }
-
-        /* 🦨 动态高密度奢华长毛绒下坠画布 */
-        #furCanvas {
-            position: absolute;
-            top: -40px;
-            left: -40px;
-            width: calc(100% + 80px);
-            height: calc(100% + 80px);
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        /* 铁铸屏幕外框 */
-        .screen-frame {
-            background-color: #0b0c0f;
-            padding: 20px;
-            border-radius: 18px;
-            box-shadow: 
-                inset 6px 8px 20px rgba(0,0,0,0.98),
-                0 6px 16px rgba(0, 0, 0, 0.9);
-            margin-bottom: 35px;
-            position: relative;
-            border: 2px solid #181920;
-            z-index: 4; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: fit-content;
-        }
-
-        .screen-container {
-            position: relative;
-            border-radius: 4px;
-            overflow: hidden;
-            box-shadow: inset 0 0 35px rgba(0,0,0,0.98);
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .screen-container::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: repeating-linear-gradient(rgba(0, 0, 0, 0.2) 0px, rgba(0, 0, 0, 0.2) 1px, transparent 1px, transparent 3px);
-            pointer-events: none;
-            z-index: 5;
-        }
-        .screen-container::after {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.005) 50%, transparent 100%);
-            pointer-events: none;
-            z-index: 6;
-        }
-
-        .screen-glitch-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #030406; opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.35s ease-in-out;
-            z-index: 10;
-        }
-        .screen-glitch-overlay.fade-out { opacity: 0.95; }
-
-        canvas#tetris { display: block; margin: 0 auto; }
-
-        /* ---------------- 按键控制区 ---------------- */
-        .controls-wrapper {
-            display: grid;
-            grid-template-columns: repeat(3, 68px);
-            grid-template-rows: repeat(2, 68px);
-            gap: 12px;
-            justify-content: center;
-            align-items: center;
-            z-index: 4;
-            touch-action: manipulation;
-            margin: 0 auto;
-        }
-
-        .key-btn {
-            width: 68px;
-            height: 68px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .key-btn .gothic-cross-svg {
-            width: 100%;
-            height: 100%;
-            filter: drop-shadow(3px 6px 10px rgba(0, 0, 0, 0.9));
-            transition: transform 0.05s ease;
-        }
-
-        .key-btn .cross-path {
-            fill: var(--gothic-solid-metal);
-            stroke: var(--metal-silver-highlight);
-            stroke-width: 1.2px;
-            transition: all 0.05s ease;
-        }
-
-        .key-btn .inner-decor {
-            fill: #08090b;
-            stroke: #1b1d24;
-            stroke-width: 0.8px;
-        }
-
-        .key-btn:active .gothic-cross-svg, .key-btn.pseudo-active .gothic-cross-svg {
-            transform: translateY(3px) scale(0.97);
-        }
-
-        .key-btn:active .cross-path, .key-btn.pseudo-active .cross-path {
-            fill: #0b0c0e;
-            stroke: #484b59;
-        }
-
-        .key-up { grid-column: 2; grid-row: 1; }
-        .key-left { grid-column: 1; grid-row: 2; }
-        .key-down { grid-column: 2; grid-row: 2; }
-        .key-right { grid-column: 3; grid-row: 2; }
-    </style>
+    .modal-desc {
+      font-size: 14px;
+      color: #666666;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- 顶部悬浮 Logo (顶格 + 向右偏移3px) -->
-    <div class="top-bar">
-        <img src="logo(2).png" 
-             onerror="this.onerror=null; this.src='https://via.placeholder.com/480x152/101114/ffffff?text=LOGO';" 
-             alt="Menu Logo" 
-             class="logo-btn" 
-             id="menuToggleBtn">
-    </div>
+  <div class="app-container">
+    <!-- 1. 向右偏移 5px 的 Logo -->
+    <img src="logo.png" alt="Logo" class="header-logo">
+  </div>
 
-    <!-- 菜单抽屉 -->
-    <div class="drawer-menu" id="drawerMenu">
-        <div class="menu-content">
-            <a href="https://buxulimao.github.io/shop/" class="shop-btn">进入商店</a>
-            <div class="qr-container">
-                <img src="gozhonghao.jpg" 
-                     onerror="this.onerror=null; this.src='https://via.placeholder.com/65x65/181920/ffffff?text=QR';" 
-                     alt="公众号二维码" 
-                     class="qr-img">
-                <span class="qr-label">微信公众号</span>
-            </div>
-        </div>
-    </div>
+  <!-- 背景遮罩 -->
+  <div class="overlay" id="overlay"></div>
 
-    <!-- 掌机主体 -->
-    <div class="console-wrapper" id="consoleMain">
-        <!-- 柔顺貂皮画布 -->
-        <canvas id="furCanvas"></canvas>
+  <!-- 2. 已清理二维码及其标识的弹窗 -->
+  <div class="modal-download" id="downloadModal">
+    <div class="modal-title">正在为你跳转应用商店...</div>
+    <div class="modal-desc">请稍候，系统即刻完成加载</div>
+  </div>
 
-        <!-- 屏幕外框 -->
-        <div class="screen-frame">
-            <div class="screen-container" id="screenShopBtn">
-                <div class="screen-glitch-overlay" id="screenOverlay"></div>
-                <canvas id="tetris"></canvas>
-            </div>
-        </div>
+  <script>
+    // 替换为实际的应用商店链接
+    const STORE_URL = 'https://apps.apple.com/'; 
 
-        <!-- 按键控制区 -->
-        <div class="controls-wrapper">
-            <button class="key-btn key-up" id="btnUp" data-key="up">
-                <svg class="gothic-cross-svg" viewBox="0 0 100 100">
-                    <path class="cross-path" d="M 38 10 L 62 10 L 62 34 L 86 34 L 86 58 L 62 58 L 62 90 L 38 90 L 38 58 L 14 58 L 14 34 L 38 34 Z" />
-                    <path class="inner-decor" d="M 43 15 L 57 15 L 57 39 L 81 39 L 81 53 L 57 53 L 57 85 L 43 85 L 43 53 L 19 53 L 19 39 L 43 39 Z" />
-                </svg>
-            </button>
-            <button class="key-btn key-left" id="btnLeft" data-key="left">
-                <svg class="gothic-cross-svg" viewBox="0 0 100 100">
-                    <path class="cross-path" d="M 38 10 L 62 10 L 62 34 L 86 34 L 86 58 L 62 58 L 62 90 L 38 90 L 38 58 L 14 58 L 14 34 L 38 34 Z" />
-                    <path class="inner-decor" d="M 43 15 L 57 15 L 57 39 L 81 39 L 81 53 L 57 53 L 57 85 L 43 85 L 43 53 L 19 53 L 19 39 L 43 39 Z" />
-                </svg>
-            </button>
-            <button class="key-btn key-down" id="btnDown" data-key="down">
-                <svg class="gothic-cross-svg" viewBox="0 0 100 100">
-                    <path class="cross-path" d="M 38 10 L 62 10 L 62 34 L 86 34 L 86 58 L 62 58 L 62 90 L 38 90 L 38 58 L 14 58 L 14 34 L 38 34 Z" />
-                    <path class="inner-decor" d="M 43 15 L 57 15 L 57 39 L 81 39 L 81 53 L 57 53 L 57 85 L 43 85 L 43 53 L 19 53 L 19 39 L 43 39 Z" />
-                </svg>
-            </button>
-            <button class="key-btn key-right" id="btnRight" data-key="right">
-                <svg class="gothic-cross-svg" viewBox="0 0 100 100">
-                    <path class="cross-path" d="M 38 10 L 62 10 L 62 34 L 86 34 L 86 58 L 62 58 L 62 90 L 38 90 L 38 58 L 14 58 L 14 34 L 38 34 Z" />
-                    <path class="inner-decor" d="M 43 15 L 57 15 L 57 39 L 81 39 L 81 53 L 57 53 L 57 85 L 43 85 L 43 53 L 19 53 L 19 39 L 43 39 Z" />
-                </svg>
-            </button>
-        </div>
-    </div>
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('downloadModal');
+      const overlay = document.getElementById('overlay');
 
-<script>
-    document.addEventListener('touchmove', function(e) {
-        e.preventDefault();
-    }, { passive: false });
+      // 显示遮罩与弹窗
+      overlay.classList.add('active');
+      
+      // 使用 requestAnimationFrame 确保 CSS 动画顺畅触发下滑
+      requestAnimationFrame(() => {
+        modal.classList.add('slide-down');
+      });
 
-    document.getElementById('screenShopBtn').addEventListener('click', () => {
-        window.location.href = "https://buxulimao.github.io/shop/";
+      // 3. 0.5秒（500ms）下滑动画执行完毕后自动跳转商店
+      setTimeout(() => {
+        window.location.href = STORE_URL;
+      }, 500);
     });
-
-    const menuToggleBtn = document.getElementById('menuToggleBtn');
-    const drawerMenu = document.getElementById('drawerMenu');
-
-    menuToggleBtn.addEventListener('click', () => {
-        const isOpen = drawerMenu.classList.toggle('open');
-        document.body.classList.toggle('menu-open', isOpen);
-        
-        setTimeout(() => {
-            if (typeof startFurEngine === 'function') startFurEngine();
-        }, 460);
-    });
-
-    const furCanvas = document.getElementById('furCanvas');
-    const fctx = furCanvas.getContext('2d');
-    const consoleMain = document.getElementById('consoleMain');
-
-    let furStrands = [];
-    const MAX_STRANDS = 6000;
-    let animationFrameId = null;
-    let timeBias = 0;
-
-    function buildFurNetwork() {
-        const rect = consoleMain.getBoundingClientRect();
-        furCanvas.width = rect.width + 80;
-        furCanvas.height = rect.height + 80;
-
-        furStrands = [];
-
-        for (let i = 0; i < MAX_STRANDS; i++) {
-            const rx = 40 + Math.random() * rect.width;
-            const ry = 40 + Math.random() * rect.height;
-
-            const centerX = furCanvas.width / 2;
-            const dirX = (rx - centerX) / centerX;
-            const length = 32 + Math.random() * 23;
-            
-            const randColor = Math.random();
-            let colorBase, highlightOpacity;
-            
-            if (randColor > 0.88) {
-                colorBase = [128, 133, 155];
-                highlightOpacity = 0.16 + Math.random() * 0.16;
-            } else if (randColor > 0.4) {
-                colorBase = [24, 25, 31];
-                highlightOpacity = 0.75 + Math.random() * 0.15;
-            } else {
-                colorBase = [6, 6, 8];
-                highlightOpacity = 0.85 + Math.random() * 0.15;
-            }
-
-            furStrands.push({
-                x: rx,
-                y: ry,
-                length: length,
-                dirX: dirX,
-                colorBase: colorBase,
-                opacity: highlightOpacity,
-                stiffness: 0.3 + Math.random() * 0.7,
-                wavePhase: Math.random() * Math.PI * 2
-            });
-        }
-    }
-
-    function renderMinkFur() {
-        fctx.clearRect(0, 0, furCanvas.width, furCanvas.height);
-        timeBias += 0.008;
-
-        const len = furStrands.length;
-        for (let i = 0; i < len; i++) {
-            const fur = furStrands[i];
-
-            const windInfluence = Math.sin(timeBias + fur.wavePhase) * 2.5 * (1 - fur.stiffness);
-            const targetX = fur.x + (fur.dirX * 12) + windInfluence;
-            const targetY = fur.y + fur.length + 8;
-
-            const cp1X = fur.x + (fur.dirX * 4);
-            const cp1Y = fur.y + (fur.length * 0.35);
-            
-            const cp2X = fur.x + (fur.dirX * 8) + windInfluence * 0.5;
-            const cp2Y = fur.y + (fur.length * 0.7);
-
-            const gradient = fctx.createLinearGradient(fur.x, fur.y, targetX, targetY);
-            gradient.addColorStop(0, `rgba(2, 2, 3, ${fur.opacity})`);
-            gradient.addColorStop(0.4, `rgba(${fur.colorBase[0]}, ${fur.colorBase[1]}, ${fur.colorBase[2]}, ${fur.opacity})`);
-            gradient.addColorStop(1, `rgba(${fur.colorBase[0] + 35}, ${fur.colorBase[1] + 38}, ${fur.colorBase[2] + 45}, ${fur.opacity * 0.9})`);
-
-            fctx.beginPath();
-            fctx.moveTo(fur.x, fur.y);
-            fctx.bezierCurveTo(cp1X, cp1Y, cp2X, cp2Y, targetX, targetY);
-            fctx.strokeStyle = gradient;
-            fctx.lineWidth = 0.6 + (1 - fur.stiffness) * 0.6;
-            fctx.stroke();
-        }
-
-        animationFrameId = requestAnimationFrame(renderMinkFur);
-    }
-
-    function startFurEngine() {
-        if (animationFrameId) cancelAnimationFrame(animationFrameId);
-        buildFurNetwork();
-        renderMinkFur();
-    }
-
-    setTimeout(startFurEngine, 80);
-    window.addEventListener('resize', () => setTimeout(startFurEngine, 150));
-
-    // 🎮 游戏液晶系统
-    const canvas = document.getElementById('tetris');
-    const ctx = canvas.getContext('2d');
-    const screenOverlay = document.getElementById('screenOverlay');
-
-    const COLS = 6; const ROWS = 6;
-    const BLOCK_SIZE = Math.min(52, (window.innerHeight * 0.38) / ROWS); 
-
-    canvas.width = COLS * BLOCK_SIZE;
-    canvas.height = ROWS * BLOCK_SIZE;
-
-    const photoList = ['logo1.png', 'logo2.png', 'logo3.png'];
-    let currentPhotoIndex = 0;
-    let logoImg = new Image();
-    let logoLoaded = false;
-
-    function loadCurrentPhoto() {
-        logoLoaded = false;
-        logoImg.src = photoList[currentPhotoIndex];
-        logoImg.onload = () => { logoLoaded = true; screenOverlay.classList.remove('fade-out'); };
-        logoImg.onerror = () => { nextPhoto(); };
-    }
-
-    function nextPhoto() {
-        currentPhotoIndex = (currentPhotoIndex + 1) % photoList.length;
-        screenOverlay.classList.add('fade-out'); 
-        setTimeout(() => { loadCurrentPhoto(); resetGameSystem(true); }, 350); 
-    }
-    loadCurrentPhoto();
-
-    const board = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
-    let piece = null; let isAutoMode = true; 
-    let dropCounter = 0; let dropInterval = 180; 
-    let lastTime = 0; let isFinished = false; let sequenceIndex = 0;
-
-    const perfectSequence = [
-        { matrix: [[1, 1], [1, 1]], x: 0 }, { matrix: [[1, 1], [1, 1]], x: 2 }, { matrix: [[1, 1], [1, 1]], x: 4 }, 
-        { matrix: [[1, 1, 1]], x: 0 }, { matrix: [[1, 1, 1]], x: 3 },       
-        { matrix: [[1, 1], [1, 1]], x: 0 }, { matrix: [[1, 1], [1, 1]], x: 2 }, { matrix: [[1, 1]], x: 4 }, { matrix: [[1, 1]], x: 4 },         
-        { matrix: [[1, 1, 1, 1, 1, 1]], x: 0 } 
-    ];
-
-    function createPiece() {
-        if (isAutoMode) {
-            if (sequenceIndex >= perfectSequence.length) return null; 
-            const p = perfectSequence[sequenceIndex++];
-            return { matrix: p.matrix, x: p.x, y: 0 };
-        } else {
-            const shapes = [[[1, 1], [1, 1]], [[1, 1, 1, 1]], [[1, 1, 1], [0, 1, 0]]];
-            const shape = shapes[Math.floor(Math.random() * shapes.length)];
-            return { matrix: shape, x: Math.floor((COLS - shape[0].length) / 2), y: 0 };
-        }
-    }
-
-    function collide(board, piece) {
-        const [m, o] = [piece.matrix, piece];
-        for (let r = 0; r < m.length; ++r) {
-            for (let c = 0; c < m[r].length; ++c) {
-                if (m[r][c] !== 0 && (board[r + o.y] && board[r + o.y][c + o.x]) !== 0) return true;
-            }
-        }
-        return false;
-    }
-
-    function merge(board, piece) {
-        piece.matrix.forEach((row, r) => {
-            row.forEach((value, c) => { if (value !== 0) board[r + piece.y][c + piece.x] = 1; });
-        });
-    }
-
-    function playerDrop() {
-        if (isFinished) return;
-        piece.y++;
-        if (collide(board, piece)) {
-            piece.y--;
-            merge(board, piece);
-            if (!isAutoMode) clearLines();
-            if (checkFilled()) {
-                isFinished = true;
-                setTimeout(() => { nextPhoto(); }, 2000); 
-                return;
-            }
-            piece = createPiece();
-            if (!piece || collide(board, piece)) {
-                isFinished = true;
-                setTimeout(() => nextPhoto(), 2000); 
-            }
-        }
-        dropCounter = 0;
-    }
-
-    function clearLines() {
-        outer: for (let r = ROWS - 1; r >= 0; --r) {
-            for (let c = 0; c < COLS; ++c) { if (board[r][c] === 0) continue outer; }
-            const row = board.splice(r, 1)[0].fill(0);
-            board.unshift(row);
-            ++r;
-        }
-    }
-
-    function checkFilled() {
-        for (let r = 0; r < ROWS; r++) {
-            for (let c = 0; c < COLS; c++) { if (board[r][c] === 0) return false; }
-        }
-        return true;
-    }
-
-    function drawBlock(x, y, isStatic) {
-        const gap = 1.5;
-        const px = x * BLOCK_SIZE + gap; const py = y * BLOCK_SIZE + gap;
-        const size = BLOCK_SIZE - gap * 2;
-
-        if (isStatic) {
-            ctx.save(); ctx.beginPath(); ctx.rect(px, py, size, size); ctx.clip();
-            if (logoLoaded) {
-                const canvasAspect = canvas.width / canvas.height;
-                const imgAspect = logoImg.width / logoImg.height;
-                let drawWidth, drawHeight, drawX, drawY;
-                if (imgAspect > canvasAspect) {
-                    drawHeight = canvas.height; drawWidth = canvas.height * imgAspect;
-                    drawX = (canvas.width - drawWidth) / 2; drawY = 0;
-                } else {
-                    drawWidth = canvas.width; drawHeight = canvas.width / imgAspect;
-                    drawX = 0; drawY = (canvas.height - drawHeight) / 2;
-                }
-                ctx.drawImage(logoImg, drawX, drawY, drawWidth, drawHeight);
-                ctx.fillStyle = 'rgba(78, 93, 108, 0.42)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            } else {
-                ctx.fillStyle = '#424d5c'; ctx.fillRect(px, py, size, size);
-            }
-            ctx.restore();
-            ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)'; ctx.lineWidth = 1; ctx.strokeRect(px, py, size, size);
-        } else {
-            ctx.fillStyle = '#f1f5f9'; ctx.fillRect(px, py, size, size);
-            ctx.strokeStyle = '#050507'; ctx.lineWidth = 2; ctx.strokeRect(px + 0.5, py + 0.5, size - 1, size - 1);
-        }
-    }
-
-    function draw() {
-        ctx.fillStyle = '#697d8c'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = '#5d6f7d'; ctx.lineWidth = 0.5;
-        for (let i = 0; i <= COLS; i++) { ctx.beginPath(); ctx.moveTo(i * BLOCK_SIZE, 0); ctx.lineTo(i * BLOCK_SIZE, canvas.height); ctx.stroke(); }
-        for (let j = 0; j <= ROWS; j++) { ctx.beginPath(); ctx.moveTo(0, j * BLOCK_SIZE); ctx.lineTo(canvas.width, j * BLOCK_SIZE); ctx.stroke(); }
-
-        board.forEach((row, y) => {
-            row.forEach((value, x) => { if (value !== 0) drawBlock(x, y, true); });
-        });
-        if (piece && !isFinished) {
-            piece.matrix.forEach((row, y) => {
-                row.forEach((value, x) => { if (value !== 0) drawBlock(piece.x + x, piece.y + y, false); });
-            });
-        }
-    }
-
-    function update(time = 0) {
-        const deltaTime = time - lastTime; lastTime = time;
-        if (!isFinished) {
-            dropCounter += deltaTime;
-            if (isAutoMode && piece) dropInterval = 50;
-            if (dropCounter > dropInterval) playerDrop();
-        }
-        draw();
-        requestAnimationFrame(update);
-    }
-
-    function resetGameSystem(backToAuto = false) {
-        board.forEach(row => row.fill(0));
-        isFinished = false; isAutoMode = backToAuto; sequenceIndex = 0;
-        dropInterval = isAutoMode ? 180 : 750; piece = createPiece();
-    }
-
-    function startManualMode() {
-        if (!isAutoMode && !isFinished) return;
-        resetGameSystem(false); 
-    }
-
-    const keys = {
-        left: () => { piece.x--; if (collide(board, piece)) piece.x++; },
-        right: () => { piece.x++; if (collide(board, piece)) piece.x--; },
-        down: () => { playerDrop(); },
-        up: () => { 
-            const rotate = (matrix) => matrix[0].map((val, index) => matrix.map(row => row[index]).reverse());
-            const oldMatrix = piece.matrix; piece.matrix = rotate(piece.matrix);
-            if (collide(board, piece)) piece.matrix = oldMatrix;
-        }
-    };
-
-    document.querySelectorAll('.key-btn').forEach(btn => {
-        const handleAction = (e) => {
-            e.preventDefault(); 
-            e.stopPropagation();
-            if (isFinished) return;
-            if (isAutoMode) startManualMode(); 
-            const keyAction = btn.getAttribute('data-key');
-            if (keys[keyAction]) keys[keyAction]();
-        };
-        btn.addEventListener('mousedown', handleAction);
-        btn.addEventListener('touchstart', handleAction);
-    });
-
-    window.addEventListener('keydown', event => {
-        if (isFinished) return;
-        const keyMap = { 'ArrowLeft': 'left', 'a': 'left', 'ArrowRight': 'right', 'd': 'right', 'ArrowDown': 'down', 's': 'down', 'ArrowUp': 'up', 'w': 'up' };
-        const action = keyMap[event.key];
-        if (action) {
-            if (isAutoMode) startManualMode();
-            keys[action]();
-            const btn = document.getElementById(`btn${action.charAt(0).toUpperCase() + action.slice(1)}`);
-            if (btn) btn.classList.add('pseudo-active');
-        }
-    });
-
-    window.addEventListener('keyup', event => {
-        const keyMap = { 'ArrowLeft': 'Left', 'a': 'Left', 'ArrowRight': 'Right', 'd': 'Right', 'ArrowDown': 'Down', 's': 'Down', 'ArrowUp': 'Up', 'w': 'Up' };
-        const action = keyMap[event.key];
-        if (action) {
-            const btn = document.getElementById(`btn${action}`);
-            if (btn) btn.classList.remove('pseudo-active');
-        }
-    });
-
-    piece = createPiece();
-    update();
-</script>
+  </script>
 </body>
 </html>
