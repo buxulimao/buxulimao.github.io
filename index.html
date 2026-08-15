@@ -2,138 +2,367 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <!-- 适配移动端视口 & 防止底部拉伸黑边 -->
+  <!-- 1. 消除移动端底部/顶部黑边：设置 viewport-fit=cover 适配刘海与底部 Safe Area -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>下载页面</title>
+  <title>官方下载页面</title>
   <style>
-    /* CSS 重置 & 消除移动端滚动与黑边 */
-    * {
+    /* ==========================================================================
+       基础重置与全屏/黑边修复样式
+       ========================================================================== */
+    *, *::before, *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    html, body {
-      width: 100%;
+    html {
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+      /* 强制拉伸视口高度，防黑边 */
       height: 100%;
-      /* 使用 svh/dvh 动态适配移动端底部 Safe Area，防止出现黑边 */
+    }
+
+    body {
+      width: 100%;
+      min-height: 100vh;
+      /* 适配 iOS 动态视口高度，彻底避免底栏变黑 */
+      min-height: -webkit-fill-available;
+      background-color: #0f1015; /* 使用与页面主主题一致的暗黑底色 */
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* 移动端安全区域内边距填充 */
+    .page-wrapper {
+      width: 100%;
       min-height: 100vh;
       min-height: -webkit-fill-available;
-      background-color: #f5f5f7; /* 设置统一背景色，避免露底黑边 */
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-bottom: env(safe-area-inset-bottom);
+      background: linear-gradient(180deg, #181920 0%, #0c0d11 100%);
     }
 
-    /* 页面主体内容 */
-    .app-container {
+    /* ==========================================================================
+       顶部导航与 Logo 调整
+       ========================================================================== */
+    .navbar {
+      width: 100%;
+      height: 64px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      z-index: 10;
+    }
+
+    /* 修改项 1：顶部 Logo 再向右移动 5px */
+    .brand-logo {
+      height: 32px;
+      width: auto;
+      transform: translateX(5px); /* 向右平移 5px */
+      transition: opacity 0.2s ease;
+    }
+
+    .brand-logo:active {
+      opacity: 0.8;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .nav-item {
+      color: #a0a5b5;
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .nav-item:hover {
+      color: #ffffff;
+    }
+
+    /* ==========================================================================
+       英雄区 / 主体 Banner 区域
+       ========================================================================== */
+    .hero-section {
+      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-top: 20px;
-      /* 适配 iPhone 底部安全区域 */
-      padding-bottom: env(safe-area-inset-bottom);
+      justify-content: center;
+      padding: 40px 24px;
+      text-align: center;
     }
 
-    /* 1. 顶部 Logo：向右移动 5px */
-    .header-logo {
-      transform: translateX(5px);
-      max-width: 120px;
-      height: auto;
-      display: block;
+    .hero-title {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    /* 遮罩层 */
-    .overlay {
+    .hero-subtitle {
+      font-size: 15px;
+      color: #94a3b8;
+      max-width: 320px;
+      line-height: 1.5;
+      margin-bottom: 32px;
+    }
+
+    /* 手风琴/功能展示区 */
+    .features-grid {
+      width: 100%;
+      max-width: 480px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: left;
+    }
+
+    .feature-card .icon {
+      font-size: 20px;
+      margin-bottom: 8px;
+      display: inline-block;
+    }
+
+    .feature-card h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .feature-card p {
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    /* ==========================================================================
+       遮罩层与弹窗系统
+       ========================================================================== */
+    .backdrop {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.5);
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
       opacity: 0;
       visibility: hidden;
-      transition: opacity 0.3s ease;
-      z-index: 99;
+      transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 998;
     }
 
-    .overlay.active {
+    .backdrop.visible {
       opacity: 1;
       visibility: visible;
     }
 
-    /* 弹窗样式：初始位于顶部上方，通过 transition 实现 0.5s 滑下动画 */
-    .modal-download {
+    /* 修改项 3：弹窗顶部滑下动画，时长严格控制为 0.5s */
+    .modal-sheet {
       position: fixed;
       top: 0;
       left: 50%;
-      transform: translate(-50%, -100%);
-      width: 88%;
-      max-width: 400px;
-      background: #ffffff;
-      border-radius: 0 0 16px 16px;
-      padding: 24px 20px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      transform: translate(-50%, -120%); /* 初始位于屏幕顶端上方外 */
+      width: 90%;
+      max-width: 420px;
+      background: #1c1d24;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-top: none;
+      border-radius: 0 0 20px 20px;
+      padding: 28px 24px 24px 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      z-index: 999;
       text-align: center;
-      z-index: 100;
-      /* 滑下动画时长控制为 0.5 秒 */
-      transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+      /* 0.5秒下滑动画 */
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* 弹窗滑下激活状态 */
-    .modal-download.slide-down {
+    /* 激活下滑状态 */
+    .modal-sheet.slide-down {
       transform: translate(-50%, 0);
+    }
+
+    .modal-header {
+      margin-bottom: 16px;
     }
 
     .modal-title {
       font-size: 18px;
       font-weight: 600;
-      color: #333333;
-      margin-bottom: 8px;
+      color: #ffffff;
+      margin-bottom: 6px;
     }
 
-    .modal-desc {
-      font-size: 14px;
-      color: #666666;
+    .modal-status {
+      font-size: 13px;
+      color: #6366f1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* 加载 Spinner 效果 */
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(99, 102, 241, 0.2);
+      border-top-color: #6366f1;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* 修改项 2：已清空二维码容器，修改为加载引导面板 */
+    .redirect-notice {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 12px;
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+    }
+
+    .redirect-notice p {
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.4;
+    }
+
+    /* ==========================================================================
+       底部页脚与黑边防护补条
+       ========================================================================== */
+    .footer {
+      padding: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #475569;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
   </style>
 </head>
 <body>
 
-  <div class="app-container">
-    <!-- Logo 偏移 5px -->
-    <img src="logo.png" alt="Logo" class="header-logo">
+  <div class="page-wrapper">
+    <!-- 顶部导航 bar -->
+    <header class="navbar">
+      <!-- 1. Logo 已向右偏移 5px -->
+      <img src="logo.png" alt="Logo" class="brand-logo" id="appLogo">
+      <nav class="nav-links">
+        <a href="javascript:void(0)" class="nav-item">首页</a>
+        <a href="javascript:void(0)" class="nav-item">关于</a>
+      </nav>
+    </header>
+
+    <!-- 页面中心区域 -->
+    <main class="hero-section">
+      <h1 class="hero-title">安全 · 高效 · 智能体验</h1>
+      <p class="hero-subtitle">正在准备安全通道，弹窗下滑后将为您自动跳转。</p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <span class="icon">🚀</span>
+          <h4>极速加载</h4>
+          <p>智能路由无缝链接</p>
+        </div>
+        <div class="feature-card">
+          <span class="icon">🔒</span>
+          <h4>安全加密</h4>
+          <p>全链路数据保护</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- 底部区域 -->
+    <footer class="footer">
+      <p>&copy; 2026 All Rights Reserved.</p>
+    </footer>
   </div>
 
-  <!-- 背景遮罩 -->
-  <div class="overlay" id="overlay"></div>
+  <!-- 弹窗背景遮罩 -->
+  <div class="backdrop" id="backdrop"></div>
 
-  <!-- 无二维码弹窗 -->
-  <div class="modal-download" id="downloadModal">
-    <div class="modal-title">正在为你跳转商店...</div>
-    <div class="modal-desc">请稍候，系统即刻完成加载</div>
+  <!-- 2. 下滑弹窗（已彻底移除二维码及其图标识） -->
+  <div class="modal-sheet" id="redirectModal">
+    <div class="modal-header">
+      <h3 class="modal-title">正在跳转商店</h3>
+      <div class="modal-status">
+        <span class="spinner"></span>
+        <span>页面加载中...</span>
+      </div>
+    </div>
+    
+    <div class="redirect-notice">
+      <p>即将自动前往目标页面，请稍候...</p>
+    </div>
   </div>
 
+  <!-- JavaScript 逻辑交互 -->
   <script>
-    // 目标跳转链接
-    const TARGET_URL = 'https://buxulimao.github.io/shop/'; 
+    // 配置跳转的目标地址
+    const TARGET_SHOP_URL = 'https://buxulimao.github.io/shop/';
 
+    /**
+     * 界面挂载完成后触发弹窗下滑逻辑
+     */
     document.addEventListener('DOMContentLoaded', () => {
-      const modal = document.getElementById('downloadModal');
-      const overlay = document.getElementById('overlay');
+      const modal = document.getElementById('redirectModal');
+      const backdrop = document.getElementById('backdrop');
 
-      // 显示遮罩
-      overlay.classList.add('active');
-      
-      // 触发下滑动画
+      // 显示背景遮罩
+      if (backdrop) {
+        backdrop.classList.add('visible');
+      }
+
+      // 使用 requestAnimationFrame 保证动画顺畅渲染
       requestAnimationFrame(() => {
-        modal.classList.add('slide-down');
+        if (modal) {
+          modal.classList.add('slide-down');
+        }
       });
 
-      // 0.5秒（500ms）下滑动画完成后自动跳转
+      // 3. 弹窗下滑动画耗时 0.5 秒 (500ms)，动画完成后精准自动跳转
       setTimeout(() => {
-        window.location.href = TARGET_URL;
+        window.location.href = TARGET_SHOP_URL;
       }, 500);
     });
+
+    /**
+     * 解决 iOS Safari 动态工具栏引起的底部黑边/尺寸抖动问题
+     */
+    function resetViewportHeight() {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+
+    window.addEventListener('resize', resetViewportHeight);
+    window.addEventListener('orientationchange', resetViewportHeight);
+    resetViewportHeight();
   </script>
 </body>
 </html>
