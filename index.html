@@ -28,7 +28,7 @@
             background-color: #010102; 
             color: #ffffff;
             font-family: 'Courier New', Courier, monospace;
-            overflow: hidden; /* 彻底禁止移动端左右/上下滑动偏移 */
+            overflow: hidden; /* 彻底禁止移动端滑动偏移 */
             position: fixed;
             top: 0;
             left: 0;
@@ -41,12 +41,13 @@
             align-items: center;
         }
 
-        /* ---------------- 顶部悬浮 LOGO ---------------- */
+        /* ---------------- 顶部悬浮 LOGO（最顶格并右移3px） ---------------- */
         .top-bar {
             position: fixed;
-            top: 10px;
+            top: 0; /* 直接置顶，不留距离 */
             left: 50%;
             transform: translateX(-50%);
+            margin-left: 3px; /* 向右偏移 3px */
             z-index: 100;
             background: transparent;
             pointer-events: auto;
@@ -64,7 +65,7 @@
             opacity: 0.9;
         }
 
-        /* ---------------- 顶部下拉抽屉菜单 ---------------- */
+        /* ---------------- 顶部下拉抽屉菜单（无底部留白） ---------------- */
         .drawer-menu {
             position: fixed;
             top: 0;
@@ -78,22 +79,24 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-end; /* 底部对齐 */
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.95);
         }
 
         .drawer-menu.open {
-            height: 360px;
+            height: 380px;
         }
 
         .menu-content {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 28px;
-            padding-top: 120px;
+            gap: 20px;
+            padding-top: 130px;
+            padding-bottom: 0; /* 底部彻底不留白 */
             opacity: 0;
             transition: opacity 0.35s ease 0.15s;
+            width: 100%;
         }
 
         .drawer-menu.open .menu-content {
@@ -123,28 +126,32 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
+            margin-bottom: 0; /* 二维码区域最底下无留白 */
         }
 
         .qr-img {
             width: 65px;
             height: 65px;
-            border-radius: 4px;
+            border-radius: 4px 4px 0 0;
             border: 1px solid #181920;
+            border-bottom: none;
             object-fit: cover;
             background-color: #0b0c0f;
+            display: block;
         }
 
         .qr-label {
             font-size: 9px;
             color: #70758c;
             letter-spacing: 1px;
+            padding-bottom: 2px;
         }
 
-        /* ---------------- 掌机主体（移动端屏幕精准居中修补） ---------------- */
+        /* ---------------- 掌机主体（移动端无黑边） ---------------- */
         .console-wrapper {
             background-color: var(--mink-black);
-            padding: 40px 30px;
+            padding: 40px 20px;
             border-radius: 42px;
             position: relative;
             display: flex;
@@ -156,16 +163,24 @@
                 inset 0 0 40px rgba(0, 0, 0, 0.95);
             margin: 0 auto;
             width: fit-content;
-            max-width: 92vw; /* 防止移动端超出视野导致偏向右侧 */
             transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
             touch-action: none;
+        }
+
+        /* 移动端全宽贴边处理（彻底移除左右黑边） */
+        @media (max-width: 600px) {
+            .console-wrapper {
+                width: 100vw;
+                border-radius: 0; /* 贴边直角去除两旁黑边间隙 */
+                padding: 30px 10px;
+            }
         }
 
         body.menu-open .console-wrapper {
             transform: translateY(320px);
         }
 
-        /* 🦨 动态高密度奢华长毛绒下坠画布（严格对称定位） */
+        /* 🦨 动态高密度奢华长毛绒下坠画布 */
         #furCanvas {
             position: absolute;
             top: -40px;
@@ -176,7 +191,7 @@
             z-index: 2;
         }
 
-        /* 铁铸屏幕外框（精准居中） */
+        /* 铁铸屏幕外框 */
         .screen-frame {
             background-color: #0b0c0f;
             padding: 20px;
@@ -234,10 +249,10 @@
 
         canvas#tetris { display: block; margin: 0 auto; }
 
-        /* ---------------- 按键控制区（强制以中轴对齐屏幕） ---------------- */
+        /* ---------------- 按键控制区 ---------------- */
         .controls-wrapper {
             display: grid;
-            grid-template-columns: repeat(3, 68px); /* 严格等宽 3 列，确保居中列不偏移 */
+            grid-template-columns: repeat(3, 68px);
             grid-template-rows: repeat(2, 68px);
             gap: 12px;
             justify-content: center;
@@ -297,7 +312,7 @@
 </head>
 <body>
 
-    <!-- 顶部悬浮 Logo -->
+    <!-- 顶部悬浮 Logo (顶格 + 向右偏移3px) -->
     <div class="top-bar">
         <img src="logo(2).png" 
              onerror="this.onerror=null; this.src='https://via.placeholder.com/480x152/101114/ffffff?text=LOGO';" 
@@ -309,7 +324,7 @@
     <!-- 菜单抽屉 -->
     <div class="drawer-menu" id="drawerMenu">
         <div class="menu-content">
-            <a href="https://buxulimao.github.io/shop/" class="shop-btn">商店</a>
+            <a href="https://buxulimao.github.io/shop/" class="shop-btn">进入商店</a>
             <div class="qr-container">
                 <img src="gozhonghao.jpg" 
                      onerror="this.onerror=null; this.src='https://via.placeholder.com/65x65/181920/ffffff?text=QR';" 
@@ -325,7 +340,7 @@
         <!-- 柔顺貂皮画布 -->
         <canvas id="furCanvas"></canvas>
 
-        <!-- 屏幕外框（主中轴） -->
+        <!-- 屏幕外框 -->
         <div class="screen-frame">
             <div class="screen-container" id="screenShopBtn">
                 <div class="screen-glitch-overlay" id="screenOverlay"></div>
@@ -333,7 +348,7 @@
             </div>
         </div>
 
-        <!-- 按键控制区（严格列中轴对齐） -->
+        <!-- 按键控制区 -->
         <div class="controls-wrapper">
             <button class="key-btn key-up" id="btnUp" data-key="up">
                 <svg class="gothic-cross-svg" viewBox="0 0 100 100">
