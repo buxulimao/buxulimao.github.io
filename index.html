@@ -100,38 +100,38 @@
 <body>
 
   <div class="app-container">
-    <!-- 1. 向右偏移 5px 的 Logo -->
+    <!-- Logo 偏移 5px -->
     <img src="logo.png" alt="Logo" class="header-logo">
   </div>
 
   <!-- 背景遮罩 -->
   <div class="overlay" id="overlay"></div>
 
-  <!-- 2. 已清理二维码及其标识的弹窗 -->
+  <!-- 无二维码弹窗 -->
   <div class="modal-download" id="downloadModal">
-    <div class="modal-title">正在为你跳转应用商店...</div>
+    <div class="modal-title">正在为你跳转商店...</div>
     <div class="modal-desc">请稍候，系统即刻完成加载</div>
   </div>
 
   <script>
-    // 替换为实际的应用商店链接
-    const STORE_URL = 'https://apps.apple.com/'; 
+    // 目标跳转链接
+    const TARGET_URL = 'https://buxulimao.github.io/shop/'; 
 
     document.addEventListener('DOMContentLoaded', () => {
       const modal = document.getElementById('downloadModal');
       const overlay = document.getElementById('overlay');
 
-      // 显示遮罩与弹窗
+      // 显示遮罩
       overlay.classList.add('active');
       
-      // 使用 requestAnimationFrame 确保 CSS 动画顺畅触发下滑
+      // 触发下滑动画
       requestAnimationFrame(() => {
         modal.classList.add('slide-down');
       });
 
-      // 3. 0.5秒（500ms）下滑动画执行完毕后自动跳转商店
+      // 0.5秒（500ms）下滑动画完成后自动跳转
       setTimeout(() => {
-        window.location.href = STORE_URL;
+        window.location.href = TARGET_URL;
       }, 500);
     });
   </script>
